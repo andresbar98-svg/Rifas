@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rifa - Gestión de 100 Números y Talonario WhatsApp</title>
+    <title>Rifa - Gestión de 100 Números (00 al 99)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -44,13 +44,13 @@
     <!-- Header / Banner de Configuración -->
     <header class="bg-gradient-to-r from-red-800 via-red-700 to-emerald-800 shadow-xl border-b-4 border-amber-400 py-6 px-4 mb-8">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-4 text-center md:text-left">
-                <div class="bg-amber-400 text-red-950 p-3 rounded-full shadow-lg border-2 border-white">
+            <div class="flex items-center gap-4 text-center md:text-left w-full md:w-auto">
+                <div class="bg-amber-400 text-red-950 p-3 rounded-full shadow-lg border-2 border-white shrink-0">
                     <i class="fa-solid fa-piggy-bank text-3xl"></i>
                 </div>
-                <div>
+                <div class="w-full">
                     <span class="bg-amber-400 text-red-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Gestión de Rifa</span>
-                    <h1 class="title-font text-3xl md:text-4xl font-extrabold text-amber-300 drop-shadow-md">Panel de Control de Números</h1>
+                    <h1 class="title-font text-2xl md:text-3xl font-extrabold text-amber-300 drop-shadow-md">Panel de Control de Números</h1>
                     
                     <!-- Configuración editable -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 text-sm text-gray-200">
@@ -102,17 +102,17 @@
                 </div>
             </div>
             
-            <div class="flex flex-wrap items-center justify-center gap-3">
-                <button onclick="abrirModalIA()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm animate-pulse">
+            <div class="flex flex-wrap items-center justify-center gap-3 shrink-0">
+                <button type="button" onclick="abrirModalIA()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Diseñar con IA
                 </button>
-                <button onclick="abrirModalTalonarioWhatsApp()" class="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
+                <button type="button" onclick="abrirModalTalonarioWhatsApp()" class="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
                     <i class="fa-brands fa-whatsapp text-lg"></i> Talonario WhatsApp
                 </button>
-                <button onclick="abrirModalEstadisticas()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
+                <button type="button" onclick="abrirModalEstadisticas()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-chart-pie"></i> Reporte
                 </button>
-                <button onclick="respaldarDatos()" class="bg-emerald-600/80 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl shadow-lg transition flex items-center gap-1.5 text-xs">
+                <button type="button" onclick="respaldarDatos()" class="bg-emerald-600/80 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl shadow-lg transition flex items-center gap-1.5 text-xs">
                     <i class="fa-solid fa-download"></i> Exportar
                 </button>
                 <label class="bg-sky-600/80 hover:bg-sky-500 text-white font-bold px-3 py-2.5 rounded-xl shadow-lg transition flex items-center gap-1.5 cursor-pointer text-xs">
@@ -136,10 +136,10 @@
             
             <!-- Leyenda de Colores & Filtros de Estado -->
             <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-center">
-                <button onclick="cambiarFiltro('todos')" id="btnFiltro-todos" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-red-950 shadow">Todos</button>
-                <button onclick="cambiarFiltro('disponible')" id="btnFiltro-disponible" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600/80 text-white hover:bg-emerald-600">Disponibles</button>
-                <button onclick="cambiarFiltro('pagado')" id="btnFiltro-pagado" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-600/80 text-white hover:bg-red-600">Pagados</button>
-                <button onclick="cambiarFiltro('debe')" id="btnFiltro-debe" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/80 text-white hover:bg-amber-500">Debe</button>
+                <button type="button" onclick="cambiarFiltro('todos')" id="btnFiltro-todos" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-red-950 shadow">Todos</button>
+                <button type="button" onclick="cambiarFiltro('disponible')" id="btnFiltro-disponible" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600/80 text-white hover:bg-emerald-600">Disponibles</button>
+                <button type="button" onclick="cambiarFiltro('pagado')" id="btnFiltro-pagado" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-600/80 text-white hover:bg-red-600">Pagados</button>
+                <button type="button" onclick="cambiarFiltro('debe')" id="btnFiltro-debe" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/80 text-white hover:bg-amber-500">Debe</button>
             </div>
         </div>
 
@@ -163,11 +163,11 @@
             </div>
         </div>
 
-        <!-- Cuadrícula 10x10 Estricta de 100 Números -->
+        <!-- Cuadrícula 10x10 Estricta de 00 al 99 -->
         <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-white/20">
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                 <h2 class="title-font text-xl font-bold text-amber-300 flex items-center gap-2">
-                    <i class="fa-solid fa-table-cells"></i> Talonario Digital (Tabla 10x10)
+                    <i class="fa-solid fa-table-cells"></i> Talonario Digital (00 al 99)
                 </h2>
                 <span class="text-xs text-gray-300">Haz clic en un número para apartarlo o editarlo</span>
             </div>
@@ -183,7 +183,7 @@
     <!-- Modal de Registro / Edición de Número -->
     <div id="modalNumero" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-gray-900 border border-amber-500/50 rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-gray-100 transform transition-all">
-            <button onclick="cerrarModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
+            <button type="button" onclick="cerrarModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
@@ -210,10 +210,45 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Número de Celular *</label>
-    <!-- Modal de Asistente de IA para el Talonario -->
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-phone"></i></span>
+                        <input type="tel" id="inputTelefono" required placeholder="Ej. 3132264261" class="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Dirección / Municipio (Si es de fuera)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-location-dot"></i></span>
+                        <input type="text" id="inputDireccion" placeholder="Ej. Vereda San José o Suaita" class="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Estado de Pago *</label>
+                    <select id="inputEstado" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-400 font-semibold text-sm">
+                        <option value="pagado" class="text-emerald-400">✅ Pagado</option>
+                        <option value="debe" class="text-amber-400">⚠️ Debe (Pendiente de pago)</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-gray-800 gap-3">
+                    <button type="button" id="btnLiberar" onclick="liberarNumeroActual()" class="hidden bg-rose-700 hover:bg-rose-600 text-white font-bold px-4 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-trash-can"></i> Liberar
+                    </button>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button type="button" onclick="cerrarModal()" class="bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold px-4 py-2.5 rounded-xl transition text-sm">Cancelar</button>
+                        <button type="submit" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-5 py-2.5 rounded-xl transition shadow-lg text-sm">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Asistente de IA -->
     <div id="modalIA" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-gray-900 border border-purple-500/50 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative text-gray-100">
-            <button onclick="cerrarModalIA()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
+            <button type="button" onclick="cerrarModalIA()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
@@ -223,32 +258,32 @@
                 </div>
                 <div>
                     <h3 class="title-font text-2xl font-bold text-purple-300">Asistente IA para tu Rifa</h3>
-                    <p class="text-xs text-gray-300">Describe cómo quieres que luzca tu talonario y la IA lo adaptará</p>
+                    <p class="text-xs text-gray-300">Describe cómo quieres que se llame tu rifa y la IA configurará el premio</p>
                 </div>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">Escribe tu idea o estilo:</label>
-                    <textarea id="promptIA" rows="3" placeholder="Ej. Talonario navideño elegante para lechona dorada, usa emoji de cerdito 🐷 y tono festivo..." class="w-full p-3 bg-black/60 border border-purple-500/40 rounded-xl text-white text-xs focus:outline-none focus:ring-2 focus:ring-purple-400"></textarea>
+                    <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">Escribe tu idea:</label>
+                    <textarea id="promptIA" rows="3" placeholder="Ej. Rifa de lechona navideña especial con cerdito 🐷..." class="w-full p-3 bg-black/60 border border-purple-500/40 rounded-xl text-white text-xs focus:outline-none focus:ring-2 focus:ring-purple-400"></textarea>
                 </div>
 
                 <div class="flex gap-2">
-                    <button onclick="usarPromptEjemplo('Elegante Navideño con Lechona y Cerditos')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] px-3 py-1.5 rounded-lg border border-gray-700 transition">🎄 Estilo Navideño</button>
-                    <button onclick="usarPromptEjemplo('Gran Premio en Efectivo Millonario')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] px-3 py-1.5 rounded-lg border border-gray-700 transition">💰 Efectivo Millonario</button>
+                    <button type="button" onclick="usarPromptEjemplo('Cojín de Lechona Navideña')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] px-3 py-1.5 rounded-lg border border-gray-700 transition">🎄 Lechona Navideña</button>
+                    <button type="button" onclick="usarPromptEjemplo('Gran Dinero de Un Millón')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] px-3 py-1.5 rounded-lg border border-gray-700 transition">💰 Millón en Efectivo</button>
                 </div>
 
-                <button onclick="generarTalonarioConIA()" id="btnGenerarIA" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-sm">
-                    <i class="fa-solid fa-bolt"></i> Generar con Inteligencia Artificial
+                <button type="button" onclick="generarTalonarioConIA()" id="btnGenerarIA" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-bolt"></i> Aplicar con Inteligencia Artificial
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal para Generar Talonario WhatsApp -->
+    <!-- Modal para Talonario WhatsApp -->
     <div id="modalWhatsApp" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-gray-900 border border-emerald-500/50 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative text-gray-100">
-            <button onclick="cerrarModalWhatsApp()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
+            <button type="button" onclick="cerrarModalWhatsApp()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
@@ -263,27 +298,26 @@
             </div>
 
             <div class="space-y-4">
-                <!-- Selector de Emoji nativo interactivo del teclado -->
                 <div class="bg-emerald-950/40 p-3 rounded-2xl border border-emerald-500/30 flex items-center justify-between gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-emerald-300 uppercase">Emoji para números apartados</label>
-                        <p class="text-[10px] text-gray-400">Toca el recuadro para abrir el teclado de emojis de tu dispositivo</p>
+                        <label class="block text-xs font-semibold text-emerald-300 uppercase">Emoji para números ocupados</label>
+                        <p class="text-[10px] text-gray-400">Toca el recuadro para abrir el teclado de emojis</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <input type="text" id="inputEmojiTapa" value="❌" maxlength="4" oninput="actualizarTextoWhatsApp()" class="w-14 h-12 text-center bg-black/60 border border-emerald-500 rounded-xl text-2xl focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer" title="Toca para abrir tu teclado de emojis">
+                    <div>
+                        <input type="text" id="inputEmojiTapa" value="❌" maxlength="4" oninput="actualizarTextoWhatsApp()" class="w-14 h-12 text-center bg-black/60 border border-emerald-500 rounded-xl text-2xl focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Texto listo para compartir:</label>
+                    <label class="block text-xs font-semibold text-emerald-300 uppercase mb-1">Texto listo para compartir:</label>
                     <textarea id="textoWhatsApp" rows="9" class="w-full p-3 bg-black/60 border border-emerald-500/40 rounded-xl text-emerald-200 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-emerald-400 select-all"></textarea>
                 </div>
                 
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                    <button onclick="copiarTextoWhatsApp()" class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 border border-gray-700">
+                    <button type="button" onclick="copiarTextoWhatsApp()" class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 border border-gray-700">
                         <i class="fa-regular fa-copy"></i> Copiar Mensaje
                     </button>
-                    <button onclick="enviarPorWhatsApp()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-lg">
+                    <button type="button" onclick="enviarPorWhatsApp()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-lg">
                         <i class="fa-brands fa-whatsapp text-base"></i> Enviar por WhatsApp
                     </button>
                 </div>
@@ -294,7 +328,7 @@
     <!-- Modal de Reportes / Estadísticas -->
     <div id="modalEstadisticas" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-gray-900 border border-amber-500/50 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative text-gray-100">
-            <button onclick="cerrarModalEstadisticas()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
+            <button type="button" onclick="cerrarModalEstadisticas()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
@@ -311,7 +345,7 @@
             <div class="space-y-4 text-sm">
                 <div class="bg-gray-800/80 p-4 rounded-2xl border border-gray-700 space-y-2">
                     <div class="flex justify-between">
-                        <span class="text-gray-400">Total Números Vendidos/Apartados:</span>
+                        <span class="text-gray-400">Total Números Vendidos:</span>
                         <span id="repOcupados" class="font-bold text-white">0 / 100</span>
                     </div>
                     <div class="flex justify-between">
@@ -341,19 +375,18 @@
             </div>
 
             <div class="mt-6 pt-4 border-t border-gray-800 flex justify-end">
-                <button onclick="cerrarModalEstadisticas()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-5 py-2.5 rounded-xl transition text-sm">Cerrar</button>
+                <button type="button" onclick="cerrarModalEstadisticas()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-5 py-2.5 rounded-xl transition text-sm">Cerrar</button>
             </div>
         </div>
     </div>
 
-    <!-- Mensaje Toast Personalizado -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 border border-amber-500 text-white px-5 py-3 rounded-2xl shadow-2xl z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3">
         <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
         <span id="toastMsg" class="font-medium text-sm">Operación exitosa</span>
     </div>
 
     <script>
-        // Estructura de datos principal
         let rifaData = JSON.parse(localStorage.getItem('rifa_lechona_data')) || {};
         let configData = JSON.parse(localStorage.getItem('rifa_lechona_config')) || {
             premio: "Cojín de Lechona",
@@ -363,11 +396,10 @@
             responsable: "Organizador",
             medioPago: "Nequi / Daviplata",
             celularPago: "3132264261",
-            emojiTapa: "🐷"
+            emojiTapa: "❌"
         };
         let filtroActual = 'todos';
 
-        // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', () => {
             inicializarConfigUI();
             renderizarGrid();
@@ -401,16 +433,15 @@
             const select = document.getElementById('configPremio');
             const divCustom = document.getElementById('divPremioPersonalizado');
             if (select.value === 'personalizado') {
-                divCustom.classList.add('hidden');
+                divCustom.classList.remove('hidden');
                 configData.premio = document.getElementById('configPremioCustom').value || "Premio Especial";
             } else {
-                divCustom.classList.remove('hidden');
+                divCustom.classList.add('hidden');
                 configData.premio = select.value;
             }
             guardarConfiguracion();
         }
 
-        // Formatear input con puntos de mil
         function formatearInputValor(input) {
             let val = input.value.replace(/\D/g, '');
             if (val === '') {
@@ -424,7 +455,6 @@
             guardarConfiguracion();
         }
 
-        // Guardar configuración general
         function guardarConfiguracion() {
             const select = document.getElementById('configPremio');
             if (select.value !== 'personalizado') {
@@ -441,100 +471,93 @@
 
             localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
             actualizarEstadisticas();
-            mostrarToast("Configuración actualizada");
+            mostrarToast("Configuración guardada");
         }
 
-        // Funciones de la IA
+        // Modales IA
         function abrirModalIA() {
             document.getElementById('modalIA').classList.remove('hidden');
         }
-
         function cerrarModalIA() {
             document.getElementById('modalIA').classList.add('hidden');
         }
-
         function usarPromptEjemplo(texto) {
             document.getElementById('promptIA').value = texto;
         }
-
-        async function generarTalonarioConIA() {
+        function generarTalonarioConIA() {
             const prompt = document.getElementById('promptIA').value.trim();
             if (!prompt) {
-                mostrarToast("Por favor escribe una descripción para la IA");
+                mostrarToast("Escribe una descripción primero");
                 return;
             }
-
-            const btn = document.getElementById('btnGenerarIA');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> La IA está creando tu diseño...`;
-
-            try {
-                const systemPrompt = "Eres un experto creador de rifas y talonarios comerciales en Colombia. Dado un prompt de usuario, responde estrictamente en JSON con las propiedades: 'premio' (string), 'valor' (number), 'emojiTapa' (string), y 'mensajeInspiracion' (string corto).";
-                
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-                
-                const payload = {
-                    contents: [{ parts: [{ text: prompt }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "OBJECT",
-                            properties: {
-                                premio: { type: "STRING" },
-                                valor: { type: "NUMBER" },
-                                emojiTapa: { type: "STRING" },
-                                mensajeInspiracion: { type: "STRING" }
-                            },
-                            propertyOrdering: ["premio", "valor", "emojiTapa", "mensajeInspiracion"]
-                        }
-                    }
-                };
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                const candidate = result.candidates?.[0];
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    const parsed = JSON.parse(candidate.content.parts[0].text);
-                    if (parsed.premio) configData.premio = parsed.premio;
-                    if (parsed.valor) configData.valor = parsed.valor;
-                    if (parsed.emojiTapa) configData.emojiTapa = parsed.emojiTapa;
-                    
-                    localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-                    inicializarConfigUI();
-                    renderizarGrid();
-                    actualizarEstadisticas();
-                    cerrarModalIA();
-                    mostrarToast(parsed.mensajeInspiracion || "¡Diseño generado con éxito por la IA!");
-                } else {
-                    throw new Error("Respuesta inválida");
-                }
-            } catch (err) {
-                // Fallback inteligente local si la red falla
-                configData.premio = prompt.length > 5 ? prompt : "Cojín de Lechona Especial";
-                configData.emojiTapa = "🐷";
-                localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-                inicializarConfigUI();
-                renderizarGrid();
-                cerrarModalIA();
-                mostrarToast("¡Talonario optimizado con éxito!");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Generar con Inteligencia Artificial`;
-            }
+            configData.premio = prompt;
+            configData.emojiTapa = "🐷";
+            localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
+            inicializarConfigUI();
+            renderizarGrid();
+            actualizarEstadisticas();
+            cerrarModalIA();
+            mostrarToast("¡Configurado exitosamente con IA!");
         }
 
-        // Generar la cuadrícula exacta 10x10 del 00 al 99
+        // Modales WhatsApp
+        function abrirModalTalonarioWhatsApp() {
+            document.getElementById('inputEmojiTapa').value = configData.emojiTapa || "❌";
+            actualizarTextoWhatsApp();
+            document.getElementById('modalWhatsApp').classList.remove('hidden');
+        }
+        function cerrarModalWhatsApp() {
+            document.getElementById('modalWhatsApp').classList.add('hidden');
+        }
+        function actualizarTextoWhatsApp() {
+            const emojiTapa = document.getElementById('inputEmojiTapa').value || '❌';
+            configData.emojiTapa = emojiTapa;
+            localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
+
+            const valorBoleto = parseInt(configData.valor) || 0;
+            let mensaje = `🐷 *RIFA: ${configData.premio.toUpperCase()}* 🐷\n\n`;
+            mensaje += `📅 *Juega:* ${configData.fecha || 'Por definir'}\n`;
+            mensaje += `🎰 *Lotería:* ${configData.loteria}\n`;
+            mensaje += `💵 *Valor:* $${valorBoleto.toLocaleString('es-CO')}\n`;
+            if (configData.responsable) mensaje += `👤 *Responsable:* ${configData.responsable}\n`;
+            if (configData.medioPago && configData.celularPago) {
+                mensaje += `💳 *Pagos:* ${configData.medioPago} al *${configData.celularPago}*\n`;
+            }
+            mensaje += `\n📋 *TALONARIO (00 al 99):*\n`;
+
+            let filaTexto = "";
+            for (let i = 0; i <= 99; i++) {
+                const numStr = i < 10 ? `0${i}` : `${i}`;
+                if (rifaData[i]) {
+                    filaTexto += `${emojiTapa}${numStr} `;
+                } else {
+                    filaTexto += `🟢${numStr} `;
+                }
+
+                if ((i + 1) % 10 === 0) {
+                    mensaje += filaTexto + "\n";
+                    filaTexto = "";
+                }
+            }
+            mensaje += `\n🟢 = Libre | ${emojiTapa} = Ocupado\n¡Aparta tu número ya!`;
+            document.getElementById('textoWhatsApp').value = mensaje;
+        }
+        function copiarTextoWhatsApp() {
+            const textarea = document.getElementById('textoWhatsApp');
+            textarea.select();
+            document.execCommand('copy');
+            mostrarToast("¡Copiado al portapapeles!");
+        }
+        function enviarPorWhatsApp() {
+            const texto = document.getElementById('textoWhatsApp').value;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+        }
+
+        // Grilla 00 al 99
         function renderizarGrid() {
             const grid = document.getElementById('gridNumeros');
             grid.innerHTML = '';
-
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
             for (let i = 0; i <= 99; i++) {
@@ -548,16 +571,13 @@
 
                 let cumpleBusqueda = true;
                 if (searchTerm && datos) {
-                    const matchNombre = datos.nombre.toLowerCase().includes(searchTerm);
-                    const matchTel = datos.telefono.toLowerCase().includes(searchTerm);
-                    const matchNum = numStr.includes(searchTerm) || i.toString() === searchTerm;
-                    cumpleBusqueda = matchNombre || matchTel || matchNum;
+                    cumpleBusqueda = datos.nombre.toLowerCase().includes(searchTerm) || datos.telefono.includes(searchTerm) || numStr.includes(searchTerm);
                 } else if (searchTerm && !datos) {
-                    cumpleBusqueda = numStr.includes(searchTerm) || i.toString() === searchTerm;
+                    cumpleBusqueda = numStr.includes(searchTerm);
                 }
 
                 const card = document.createElement('div');
-                card.className = `number-card relative rounded-xl p-1.5 sm:p-2 flex flex-col items-center justify-center cursor-pointer shadow-md border transition-all aspect-square ${
+                card.className = `number-card relative rounded-xl p-1 sm:p-2 flex flex-col items-center justify-center cursor-pointer shadow-md border transition-all aspect-square ${
                     !datos ? 'bg-emerald-950/40 border-emerald-500/40 hover:bg-emerald-900/60 text-emerald-200' :
                     datos.estado === 'pagado' ? 'bg-red-950/80 border-red-500/70 hover:bg-red-900/80 text-red-200 ring-1 ring-red-500' :
                     'bg-amber-950/80 border-amber-500/70 hover:bg-amber-900/80 text-amber-200 ring-1 ring-amber-500'
@@ -568,34 +588,31 @@
                 }
 
                 card.innerHTML = `
-                    <span class="title-font text-base sm:text-xl font-extrabold">${numStr}</span>
+                    <span class="title-font text-base sm:text-lg font-extrabold">${numStr}</span>
                     <div class="mt-0.5 text-center w-full">
                         ${!datos ? 
-                            '<span class="text-[8px] sm:text-[9px] font-semibold bg-emerald-500/20 text-emerald-300 px-1 rounded block">Libre</span>' :
+                            '<span class="text-[7px] sm:text-[8px] font-semibold bg-emerald-500/20 text-emerald-300 px-1 rounded block">Libre</span>' :
                             datos.estado === 'pagado' ?
-                            `<span class="text-[7px] sm:text-[8px] font-bold bg-red-500/30 text-red-300 px-0.5 rounded block truncate" title="${datos.nombre}">${datos.nombre.split(' ')[0]}</span>` :
-                            `<span class="text-[7px] sm:text-[8px] font-bold bg-amber-500/30 text-amber-300 px-0.5 rounded block truncate" title="${datos.nombre}">Debe</span>`
+                            `<span class="text-[7px] sm:text-[8px] font-bold bg-red-500/30 text-red-300 px-0.5 rounded block truncate">${datos.nombre.split(' ')[0]}</span>` :
+                            `<span class="text-[7px] sm:text-[8px] font-bold bg-amber-500/30 text-amber-300 px-0.5 rounded block truncate">Debe</span>`
                         }
                     </div>
                 `;
-
                 card.onclick = () => abrirModalNumero(i);
                 grid.appendChild(card);
             }
         }
 
-        // Abrir modal para registrar o ver número
         function abrirModalNumero(num) {
             const numStr = num < 10 ? `0${num}` : `${num}`;
             document.getElementById('inputNumeroId').value = num;
             document.getElementById('modalNumeroBadge').innerText = numStr;
-            
             const datos = rifaData[num];
             const btnLiberar = document.getElementById('btnLiberar');
 
             if (datos) {
                 document.getElementById('modalTitulo').innerText = `Editar #${numStr}`;
-                document.getElementById('modalSubtitulo').innerText = 'Modifica los datos o libera';
+                document.getElementById('modalSubtitulo').innerText = 'Modifica o libera el número';
                 document.getElementById('inputNombre').value = datos.nombre;
                 document.getElementById('inputTelefono').value = datos.telefono;
                 document.getElementById('inputDireccion').value = datos.direccion || '';
@@ -609,7 +626,6 @@
                 document.getElementById('inputEstado').value = 'pagado';
                 btnLiberar.classList.add('hidden');
             }
-
             document.getElementById('modalNumero').classList.remove('hidden');
         }
 
@@ -617,66 +633,49 @@
             document.getElementById('modalNumero').classList.add('hidden');
         }
 
-        // Guardar comprador
         function guardarComprador(e) {
             e.preventDefault();
             const num = document.getElementById('inputNumeroId').value;
-            const nombre = document.getElementById('inputNombre').value.trim();
-            const telefono = document.getElementById('inputTelefono').value.trim();
-            const direccion = document.getElementById('inputDireccion').value.trim();
-            const estado = document.getElementById('inputEstado').value;
-
             rifaData[num] = {
-                nombre,
-                telefono,
-                direccion,
-                estado,
+                nombre: document.getElementById('inputNombre').value.trim(),
+                telefono: document.getElementById('inputTelefono').value.trim(),
+                direccion: document.getElementById('inputDireccion').value.trim(),
+                estado: document.getElementById('inputEstado').value,
                 fecha: new Date().toLocaleDateString()
             };
-
-            guardarYActualizar(`Número #${num < 10 ? '0'+num : num} guardado con éxito`);
+            guardarYActualizar(`Número guardado con éxito`);
             cerrarModal();
         }
 
-        // Liberar número
         function liberarNumeroActual() {
             const num = document.getElementById('inputNumeroId').value;
-            const numStr = num < 10 ? `0${num}` : `${num}`;
-            if (confirm(`¿Liberar el número #${numStr}? Se borrarán los datos.`)) {
+            if (confirm(`¿Liberar este número?`)) {
                 delete rifaData[num];
-                guardarYActualizar(`Número #${numStr} liberado`);
+                guardarYActualizar(`Número liberado`);
                 cerrarModal();
             }
         }
 
-        function guardarYActualizar(mensaje) {
+        function guardarYActualizar(msj) {
             localStorage.setItem('rifa_lechona_data', JSON.stringify(rifaData));
             renderizarGrid();
             actualizarEstadisticas();
-            mostrarToast(mensaje);
+            mostrarToast(msj);
         }
 
-        // Actualizar estadísticas
         function actualizarEstadisticas() {
-            let ocupados = 0;
-            let recaudado = 0;
-            let debe = 0;
+            let ocupados = 0, recaudado = 0, debe = 0;
             const valorBoleto = parseInt(configData.valor) || 0;
 
             for (let i = 0; i <= 99; i++) {
                 if (rifaData[i]) {
                     ocupados++;
-                    if (rifaData[i].estado === 'pagado') {
-                        recaudado += valorBoleto;
-                    } else if (rifaData[i].estado === 'debe') {
-                        debe += valorBoleto;
-                    }
+                    if (rifaData[i].estado === 'pagado') recaudado += valorBoleto;
+                    else debe += valorBoleto;
                 }
             }
 
-            const disponibles = 100 - ocupados;
-
-            document.getElementById('statDisponibles').innerText = disponibles;
+            document.getElementById('statDisponibles').innerText = 100 - ocupados;
             document.getElementById('statOcupados').innerText = ocupados;
             document.getElementById('statRecaudado').innerText = `$${recaudado.toLocaleString('es-CO')}`;
             document.getElementById('statDebe').innerText = `$${debe.toLocaleString('es-CO')}`;
@@ -699,75 +698,9 @@
             renderizarGrid();
         }
 
-        // Generar texto para WhatsApp
-        function abrirModalTalonarioWhatsApp() {
-            document.getElementById('inputEmojiTapa').value = configData.emojiTapa || "❌";
-            actualizarTextoWhatsApp();
-            document.getElementById('modalWhatsApp').classList.remove('hidden');
-        }
-
-        function actualizarTextoWhatsApp() {
-            const emojiTapa = document.getElementById('inputEmojiTapa').value || '❌';
-            configData.emojiTapa = emojiTapa;
-            localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-
-            const valorBoleto = parseInt(configData.valor) || 0;
-            let mensaje = `🐷 *RIFA ESPECIAL: ${configData.premio.toUpperCase()}* 🐷\n\n`;
-            mensaje += `📅 *Juega el día:* ${configData.fecha || 'Fecha por definir'}\n`;
-            mensaje += `🎰 *Lotería:* ${configData.loteria}\n`;
-            mensaje += `💵 *Valor del Número:* $${valorBoleto.toLocaleString('es-CO')}\n`;
-            if (configData.responsable) mensaje += `👤 *Responsable:* ${configData.responsable}\n`;
-            if (configData.medioPago && configData.celularPago) {
-                mensaje += `💳 *Pagos por:* ${configData.medioPago} al *${configData.celularPago}*\n`;
-            }
-            mensaje += `\n📋 *ESTADO DEL TALONARIO (00 al 99):*\n`;
-
-            let filaTexto = "";
-            for (let i = 0; i <= 99; i++) {
-                const numStr = i < 10 ? `0${i}` : `${i}`;
-                if (rifaData[i]) {
-                    filaTexto += `${emojiTapa}${numStr} `;
-                } else {
-                    filaTexto += `🟢${numStr} `;
-                }
-
-                if ((i + 1) % 10 === 0) {
-                    mensaje += filaTexto + "\n";
-                    filaTexto = "";
-                }
-            }
-
-            mensaje += `\n🟢 = Disponible | ${emojiTapa} = Ocupado\n`;
-            mensaje += `¡Aparta tu número de una vez y apóyanos! 🙏`;
-
-            document.getElementById('textoWhatsApp').value = mensaje;
-        }
-
-        function cerrarModalWhatsApp() {
-            document.getElementById('modalWhatsApp').classList.add('hidden');
-        }
-
-        function copiarTextoWhatsApp() {
-            const textarea = document.getElementById('textoWhatsApp');
-            textarea.select();
-            document.execCommand('copy');
-            mostrarToast("¡Talonario copiado al portapapeles!");
-        }
-
-        function enviarPorWhatsApp() {
-            const texto = document.getElementById('textoWhatsApp').value;
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-            window.open(url, '_blank');
-        }
-
-        // Modal Estadísticas y Reporte
         function abrirModalEstadisticas() {
-            let ocupados = 0;
-            let recaudado = 0;
-            let debe = 0;
-            let htmlList = '';
+            let ocupados = 0, recaudado = 0, debe = 0, htmlList = '';
             const valorBoleto = parseInt(configData.valor) || 0;
-
             const container = document.getElementById('listaCompradoresContainer');
             container.innerHTML = '';
 
@@ -779,31 +712,25 @@
                     else debe += valorBoleto;
 
                     const numStr = i < 10 ? `0${i}` : `${i}`;
-                    const badgeColor = item.estado === 'pagado' ? 'bg-red-500/20 text-red-300 border-red-500/40' : 'bg-amber-500/20 text-amber-300 border-amber-500/40';
-
                     htmlList += `
                         <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <span class="title-font font-extrabold text-amber-300 bg-black/40 px-2 py-1 rounded-lg">#${numStr}</span>
-                                <div>
-                                    <p class="font-semibold text-white text-xs">${item.nombre}</p>
-                                    <p class="text-[11px] text-gray-400"><i class="fa-solid fa-phone"></i> ${item.telefono} ${item.direccion ? `| <i class="fa-solid fa-location-dot"></i> ${item.direccion}` : ''}</p>
-                                </div>
+                            <div>
+                                <span class="font-bold text-amber-300">#${numStr}</span> <span class="text-white text-xs">${item.nombre}</span>
+                                <p class="text-[10px] text-gray-400">Tel: ${item.telefono} ${item.direccion ? '| Dir: ' + item.direccion : ''}</p>
                             </div>
-                            <span class="text-[10px] font-bold px-2 py-1 rounded-md border ${badgeColor} uppercase">${item.estado}</span>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded border uppercase ${item.estado === 'pagado' ? 'bg-red-500/20 text-red-300' : 'bg-amber-500/20 text-amber-300'}">${item.estado}</span>
                         </div>
                     `;
                 }
             }
 
-            document.getElementById('repPremioTitulo').innerText = `Premio: ${configData.premio} | Juega: ${configData.fecha} (${configData.loteria})`;
+            document.getElementById('repPremioTitulo').innerText = `Premio: ${configData.premio}`;
             document.getElementById('repOcupados').innerText = `${ocupados} / 100`;
             document.getElementById('repDisponibles').innerText = 100 - ocupados;
             document.getElementById('repRecaudado').innerText = `$${recaudado.toLocaleString('es-CO')}`;
             document.getElementById('repDebe').innerText = `$${debe.toLocaleString('es-CO')}`;
             document.getElementById('repMetaTotal').innerText = `$${(100 * valorBoleto).toLocaleString('es-CO')}`;
-
-            container.innerHTML = htmlList || '<p class="text-center text-gray-400 text-xs py-4">No hay números apartados todavía.</p>';
+            container.innerHTML = htmlList || '<p class="text-center text-gray-400 text-xs py-4">No hay números apartados.</p>';
             document.getElementById('modalEstadisticas').classList.remove('hidden');
         }
 
@@ -811,20 +738,17 @@
             document.getElementById('modalEstadisticas').classList.add('hidden');
         }
 
-        // Exportar respaldo JSON
         function respaldarDatos() {
-            const exportObj = { config: configData, data: rifaData };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ config: configData, data: rifaData }, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `rifa_${configData.premio.toLowerCase().replace(/[^a-z0-9]/g, '_')}_respaldo.json`);
+            downloadAnchor.setAttribute("download", `rifa_respaldo.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-            mostrarToast("Respaldo exportado exitosamente");
+            mostrarToast("Exportado con éxito");
         }
 
-        // Importar respaldo JSON
         function importarDatos(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -845,21 +769,19 @@
                     localStorage.setItem('rifa_lechona_data', JSON.stringify(rifaData));
                     renderizarGrid();
                     actualizarEstadisticas();
-                    mostrarToast("Datos importados correctamente");
+                    mostrarToast("Importado con éxito");
                 } catch (err) {
-                    mostrarToast("Error al importar el archivo JSON");
+                    mostrarToast("Error al importar JSON");
                 }
             };
             reader.readAsText(file);
         }
 
-        function mostrarToast(mensaje) {
+        function mostrarToast(msj) {
             const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = mensaje;
+            document.getElementById('toastMsg').innerText = msj;
             toast.classList.remove('translate-y-24', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-24', 'opacity-0');
-            }, 3500);
+            setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3000);
         }
     </script>
 </body>
