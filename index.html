@@ -3,764 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rifa - Gestión de Números (00 al 99)</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Fredoka', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Gestor de Rifa Pro - 00 al 99</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Pacifico&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #14532d 0%, #064e3b 50%, #7f1d1d 100%);
-            min-height: 100vh;
-        }
-        .title-font {
-            font-family: 'Fredoka', cursive, sans-serif;
-        }
-        .number-card {
-            transition: all 0.2s ease-in-out;
-        }
-        .number-card:hover {
-            transform: translateY(-2px);
-        }
+        body { font-family: 'Montserrat', sans-serif; }
+        .font-title { font-family: 'Luckiest Guy', cursive; }
+        .font-script { font-family: 'Pacifico', cursive; }
     </style>
 </head>
-<body class="text-gray-100 antialiased selection:bg-red-500 selection:text-white pb-12">
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-12">
 
-    <!-- Header / Banner de Configuración -->
-    <header class="bg-gradient-to-r from-red-800 via-red-700 to-emerald-800 shadow-xl border-b-4 border-amber-400 py-6 px-4 mb-8">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-4 text-center md:text-left w-full md:w-auto">
-                <div class="bg-amber-400 text-red-950 p-3 rounded-full shadow-lg border-2 border-white shrink-0">
-                    <i class="fa-solid fa-piggy-bank text-3xl"></i>
+    <!-- Header -->
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700 shadow-xl sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-red-600 to-amber-500 text-white p-2.5 rounded-2xl shadow-lg text-xl flex items-center justify-center">
+                    <i class="fa-solid fa-ticket"></i>
                 </div>
-                <div class="w-full">
-                    <span class="bg-amber-400 text-red-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Gestión de Rifa</span>
-                    <h1 class="title-font text-2xl md:text-3xl font-extrabold text-amber-300 drop-shadow-md">Panel de Control de Números</h1>
-                    
-                    <!-- Configuración editable -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 text-sm text-gray-200">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-amber-300 font-semibold w-24">Premio:</span>
-                            <select id="configPremio" onchange="cambiarPremioSelect()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full">
-                                <option value="Cojín de Lechona">Cojín de Lechona</option>
-                                <option value="Dinero de $500.000">Dinero de $500.000</option>
-                                <option value="Dinero de $1.000.000">Dinero de $1.000.000</option>
-                                <option value="personalizado">Otro (Personalizado)...</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-amber-300 font-semibold w-24">Valor ($):</span>
-                            <input type="text" id="configValor" value="5.000" oninput="formatearInputValor(this)" onchange="guardarConfiguracion()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full" placeholder="Ej. 5.000">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-amber-300 font-semibold w-24">Fecha Sorteo:</span>
-                            <input type="date" id="configFecha" onchange="guardarConfiguracion()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-amber-300 font-semibold w-24">Lotería:</span>
-                            <select id="configLoteria" onchange="guardarConfiguracion()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full">
-                                <option value="Lotería de Boyacá">Lotería de Boyacá</option>
-                                <option value="Lotería de Santander">Lotería de Santander</option>
-                                <option value="Lotería de Medellín">Lotería de Medellín</option>
-                                <option value="Lotería de Cundinamarca">Lotería de Cundinamarca</option>
-                                <option value="Lotería del Tolima">Lotería del Tolima</option>
-                                <option value="Otra Lotería">Otra Lotería</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-amber-300 font-semibold w-24">Responsable:</span>
-                            <input type="text" id="configResponsable" onchange="guardarConfiguracion()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full" placeholder="Ej. Juan Pérez">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-amber-300 font-semibold w-24">Medio de Pago:</span>
-                            <input type="text" id="configMedioPago" onchange="guardarConfiguracion()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full" placeholder="Ej. Nequi / Daviplata">
-                        </div>
-                        <div class="flex items-center gap-2 sm:col-span-2">
-                            <span class="text-xs text-amber-300 font-semibold w-24">Cel. Pagos:</span>
-                            <input type="text" id="configCelularPago" onchange="guardarConfiguracion()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full" placeholder="Ej. 3132264261">
-                        </div>
-                    </div>
-                    <!-- Input extra si escoge premio personalizado -->
-                    <div id="divPremioPersonalizado" class="mt-2 hidden">
-                        <input type="text" id="configPremioCustom" placeholder="Escribe el premio personalizado..." onchange="guardarConfiguracion()" class="bg-black/40 border border-amber-400/50 rounded-lg px-2.5 py-1 text-amber-300 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-400 text-xs w-full">
-                    </div>
+                <div>
+                    <h1 class="text-lg font-black tracking-wide text-white flex items-center gap-2">
+                        Control de Rifa 
+                        <span id="badgePremio" class="text-xs bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-0.5 rounded-full font-semibold">Cojín de Lechona</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Sistema automático 00 al 99 con Talonario Visual</p>
                 </div>
             </div>
-            
-            <div class="flex flex-wrap items-center justify-center gap-3 shrink-0">
-                <button type="button" onclick="abrirModalIA()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Diseñar con IA
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="abrirConfiguracion()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-gear text-red-400"></i> Ajustes
                 </button>
-                <button type="button" onclick="abrirModalTalonarioWhatsApp()" class="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Talonario WhatsApp
+                <button onclick="abrirAiModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Diseñador IA Pro
                 </button>
-                <button type="button" onclick="abrirModalEstadisticas()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
+                <!-- Botón para Subir / Cargar Talonario Personalizado -->
+                <label class="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-600/30 cursor-pointer">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Subir Talonario
+                    <input type="file" id="inputSubirTalonario" accept="image/*" onchange="subirTalonarioImagen(event)" class="hidden">
+                </label>
+                <button onclick="abrirWhatsAppModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-600/30">
+                    <i class="fa-brands fa-whatsapp text-base"></i> Talonario WhatsApp
+                </button>
+                <button onclick="abrirReportesModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow">
                     <i class="fa-solid fa-chart-pie"></i> Reporte
+                </button>
+                <button onclick="reiniciarRifa()" class="bg-rose-950/40 hover:bg-rose-900 text-rose-300 px-3 py-2 rounded-xl text-xs font-semibold transition border border-rose-700/50" title="Reiniciar Rifa">
+                    <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4">
-
-        <!-- Panel de Filtros y Búsqueda -->
-        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/20 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="relative w-full md:w-96">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-                    <i class="fa-solid fa-search"></i>
-                </span>
-                <input type="text" id="searchInput" oninput="filtrarNumeros()" placeholder="Buscar por nombre, teléfono o número..." class="w-full pl-10 pr-4 py-2.5 bg-white/10 border border-white/30 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm">
-            </div>
-            
-            <!-- Leyenda de Colores & Filtros de Estado -->
-            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-center">
-                <button type="button" onclick="cambiarFiltro('todos')" id="btnFiltro-todos" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-red-950 shadow">Todos</button>
-                <button type="button" onclick="cambiarFiltro('disponible')" id="btnFiltro-disponible" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600/80 text-white hover:bg-emerald-600">Disponibles</button>
-                <button type="button" onclick="cambiarFiltro('pagado')" id="btnFiltro-pagado" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-600/80 text-white hover:bg-red-600">Pagados</button>
-                <button type="button" onclick="cambiarFiltro('debe')" id="btnFiltro-debe" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/80 text-white hover:bg-amber-500">Debe</button>
-            </div>
-        </div>
-
-        <!-- Tarjetas de Resumen Rápido -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <div class="bg-emerald-900/60 border border-emerald-500/40 p-4 rounded-2xl backdrop-blur-sm text-center">
-                <p class="text-xs text-emerald-300 font-semibold uppercase">Disponibles</p>
-                <p id="statDisponibles" class="text-2xl md:text-3xl font-extrabold text-white mt-1">100</p>
-            </div>
-            <div class="bg-red-900/60 border border-red-500/40 p-4 rounded-2xl backdrop-blur-sm text-center">
-                <p class="text-xs text-red-300 font-semibold uppercase">Vendidos / Apartados</p>
-                <p id="statOcupados" class="text-2xl md:text-3xl font-extrabold text-white mt-1">0</p>
-            </div>
-            <div class="bg-amber-900/60 border border-amber-500/40 p-4 rounded-2xl backdrop-blur-sm text-center">
-                <p class="text-xs text-amber-300 font-semibold uppercase">Recaudado</p>
-                <p id="statRecaudado" class="text-2xl md:text-3xl font-extrabold text-amber-400 mt-1">$0</p>
-            </div>
-            <div class="bg-sky-900/60 border border-sky-500/40 p-4 rounded-2xl backdrop-blur-sm text-center">
-                <p class="text-xs text-sky-300 font-semibold uppercase">Por Cobrar (Debe)</p>
-                <p id="statDebe" class="text-2xl md:text-3xl font-extrabold text-sky-300 mt-1">$0</p>
-            </div>
-        </div>
-
-        <!-- Cuadrícula 10x10 Estricta de 00 al 99 -->
-        <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-white/20">
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
-                <h2 class="title-font text-xl font-bold text-amber-300 flex items-center gap-2">
-                    <i class="fa-solid fa-table-cells"></i> Talonario Digital (00 al 99)
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Info -->
+        <aside class="lg:col-span-1 space-y-6">
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-5 shadow-xl space-y-4 backdrop-blur">
+                <h2 class="text-sm font-bold text-slate-200 border-b border-slate-700 pb-2.5 flex items-center justify-between uppercase tracking-wider">
+                    <span>Sorteo</span>
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
                 </h2>
-                <span class="text-xs text-gray-300">Haz clic en un número para apartarlo o editarlo</span>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Premio:</span>
+                        <span id="lblPremio" class="font-bold text-white text-sm">Cojín de Lechona</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Lotería:</span>
+                        <span id="lblLoteria" class="font-semibold text-amber-300">Lotería de Boyacá</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Fecha del Sorteo:</span>
+                        <span id="lblFecha" class="font-semibold text-emerald-400">Sábado, 26 de Diciembre de 2026</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Valor por Número:</span>
+                        <span id="lblValor" class="font-bold text-sky-400 text-sm">$5.000</span>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Grid forzado a 10 columnas exactas -->
-            <div id="gridNumeros" class="grid grid-cols-10 gap-2 sm:gap-3 max-w-4xl mx-auto">
-                <!-- Generado por JavaScript -->
-            </div>
-        </div>
 
+            <!-- Stats -->
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-5 shadow-xl space-y-4 backdrop-blur">
+                <h2 class="text-sm font-bold text-slate-200 border-b border-slate-700 pb-2.5 flex items-center justify-between uppercase tracking-wider">
+                    <span>Finanzas</span>
+                    <i class="fa-solid fa-wallet text-emerald-400"></i>
+                </h2>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-slate-900/70 p-3 rounded-2xl border border-slate-700/50">
+                        <span class="text-[10px] text-slate-400 block font-medium">Libres</span>
+                        <span id="statLibres" class="text-xl font-black text-slate-200">100</span>
+                    </div>
+                    <div class="bg-slate-900/70 p-3 rounded-2xl border border-slate-700/50">
+                        <span class="text-[10px] text-slate-400 block font-medium">Ocupados</span>
+                        <span id="statOcupados" class="text-xl font-black text-indigo-400">0</span>
+                    </div>
+                    <div class="bg-emerald-950/30 p-3 rounded-2xl border border-emerald-800/40">
+                        <span class="text-[10px] text-emerald-300 block font-medium">Pagado</span>
+                        <span id="statPagados" class="text-xl font-black text-emerald-400">$0</span>
+                    </div>
+                    <div class="bg-amber-950/30 p-3 rounded-2xl border border-amber-800/40">
+                        <span class="text-[10px] text-amber-300 block font-medium">Debe</span>
+                        <span id="statDebe" class="text-xl font-black text-amber-400">$0</span>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-slate-700/80 text-center">
+                    <span class="text-[10px] text-slate-400 block uppercase font-semibold">Recaudo Total Esperado</span>
+                    <span id="statTotalRecaudable" class="text-xl font-black text-white">$500.000</span>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-5 shadow-xl space-y-3 backdrop-blur">
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Filtrar Talonario</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="filtrar('todos')" id="btnFiltroTodos" class="px-3 py-2 rounded-xl text-xs bg-red-600 text-white font-semibold transition shadow col-span-2">
+                        <i class="fa-solid fa-border-all mr-1.5"></i> Todos (00 - 99)
+                    </button>
+                    <button onclick="filtrar('libres')" id="btnFiltroLibres" class="px-2.5 py-2 rounded-xl text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium transition">
+                        Disponibles
+                    </button>
+                    <button onclick="filtrar('pagados')" id="btnFiltroPagados" class="px-2.5 py-2 rounded-xl text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium transition">
+                        Pagados
+                    </button>
+                </div>
+                <div class="pt-1">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+                        <input type="text" id="inputBuscar" oninput="buscarComprador()" placeholder="Buscar número o nombre..." class="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-500">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Grid 00-99 -->
+        <section class="lg:col-span-3 space-y-4">
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-5 shadow-xl backdrop-blur">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5 pb-3 border-b border-slate-700">
+                    <div>
+                        <h2 class="text-base font-bold text-white">Talonario de 00 al 99</h2>
+                        <p class="text-xs text-slate-400">Haz clic en un número libre para apartarlo o en uno ocupado para editar.</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-semibold">
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Libre</div>
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> Debe</div>
+                        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-600 inline-block"></span> Pagado</div>
+                    </div>
+                </div>
+
+                <!-- 10x10 Grid for 00 to 99 -->
+                <div id="gridNumeros" class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                    <!-- JS generated -->
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Modal de Registro / Edición de Número -->
-    <div id="modalNumero" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-gray-900 border border-amber-500/50 rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-gray-100 transform transition-all">
-            <button type="button" onclick="cerrarModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
-            <div class="flex items-center gap-3 mb-6">
-                <div id="modalNumeroBadge" class="w-14 h-14 rounded-2xl bg-amber-500 text-red-950 font-extrabold text-2xl flex items-center justify-center shadow-lg title-font">
-                    00
-                </div>
-                <div>
-                    <h3 id="modalTitulo" class="title-font text-2xl font-bold text-amber-300">Apartar Número</h3>
-                    <p id="modalSubtitulo" class="text-xs text-gray-300">Completa los datos del comprador</p>
-                </div>
+    <!-- Modal Asignar/Editar Número -->
+    <div id="modalNumero" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div class="bg-slate-700/50 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <span id="modalTituloNumero" class="bg-red-600 text-white text-xs px-2.5 py-1 rounded-xl">#00</span>
+                    Gestionar Puesto
+                </h3>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
-
-            <form id="formComprador" onsubmit="guardarComprador(event)" class="space-y-4">
-                <input type="hidden" id="inputNumeroId">
-                
+            
+            <form id="formComprador" onsubmit="guardarComprador(event)" class="p-6 space-y-4">
+                <input type="hidden" id="inputNumeroHidden">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Nombre Completo *</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" id="inputNombre" required placeholder="Ej. Juan Pérez" class="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm">
-                    </div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Nombre Completo</label>
+                    <input type="text" id="inputNombre" required placeholder="Ej: María Rodríguez" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-500">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Número de Celular *</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-phone"></i></span>
-                        <input type="tel" id="inputTelefono" required placeholder="Ej. 3132264261" class="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm">
-                    </div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Número de Celular / WhatsApp</label>
+                    <input type="tel" id="inputCelular" placeholder="Ej: 3132264261" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-500">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Dirección / Municipio (Si es de fuera)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-location-dot"></i></span>
-                        <input type="text" id="inputDireccion" placeholder="Ej. Vereda San José o Suaita" class="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm">
-                    </div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Dirección / Municipio</label>
+                    <input type="text" id="inputDireccion" placeholder="Ej: Vereda Centro / Barbosa" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-500">
                 </div>
-
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Estado de Pago *</label>
-                    <select id="inputEstado" class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-400 font-semibold text-sm">
-                        <option value="pagado" class="text-emerald-400">✅ Pagado</option>
-                        <option value="debe" class="text-amber-400">⚠️ Debe (Pendiente de pago)</option>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Estado de Pago</label>
+                    <select id="selectEstado" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-red-500">
+                        <option value="pagado">🟢 Pagado</option>
+                        <option value="debe">🟠 Debe (Pendiente)</option>
                     </select>
                 </div>
-
-                <div class="flex items-center justify-between pt-4 border-t border-gray-800 gap-3">
-                    <button type="button" id="btnLiberar" onclick="liberarNumeroActual()" class="hidden bg-rose-700 hover:bg-rose-600 text-white font-bold px-4 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-trash-can"></i> Liberar
+                <div class="pt-3 flex items-center justify-between gap-3">
+                    <button type="button" id="btnLiberar" onclick="liberarNumeroActual()" class="hidden bg-rose-950/50 hover:bg-rose-900 text-rose-300 border border-rose-700/50 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition">
+                        Liberar
                     </button>
                     <div class="flex items-center gap-2 ml-auto">
-                        <button type="button" onclick="cerrarModal()" class="bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold px-4 py-2.5 rounded-xl transition text-sm">Cancelar</button>
-                        <button type="submit" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-5 py-2.5 rounded-xl transition shadow-lg text-sm">Guardar</button>
+                        <button type="button" onclick="cerrarModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-3.5 py-2.5 rounded-xl text-xs font-medium transition">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="bg-red-600 hover:bg-red-500 text-white px-4.5 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-red-600/30 transition">
+                            Guardar
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal de Asistente de IA Interactivo con Vista Previa y Modificaciones -->
-    <div id="modalIA" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-gray-900 border border-purple-500/50 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative text-gray-100">
-            <button type="button" onclick="cerrarModalIA()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-bold text-xl flex items-center justify-center shadow-lg">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                </div>
-                <div>
-                    <h3 class="title-font text-xl font-bold text-purple-300">Diseñador IA de Rifa</h3>
-                    <p class="text-xs text-gray-300">Pide modificaciones y elige cuando esté listo</p>
-                </div>
+    <!-- Modal Ajustes -->
+    <div id="modalConfig" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div class="bg-slate-700/50 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-red-400"></i> Ajustes de la Rifa
+                </h3>
+                <button onclick="cerrarConfiguracion()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
-
-            <div class="space-y-4">
+            <form onsubmit="guardarConfiguracion(event)" class="p-6 space-y-4 text-xs">
                 <div>
-                    <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">Escribe tu idea o modificación:</label>
+                    <label class="block font-bold text-slate-300 uppercase mb-1">Premio</label>
+                    <select id="cfgPremioSelect" onchange="verificarPremioPersonalizado()" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white mb-2 focus:outline-none focus:border-red-500">
+                        <option value="Cojín de Lechona">Cojín de Lechona</option>
+                        <option value="Dinero de $500.000">Dinero de $500.000</option>
+                        <option value="Dinero de $1.000.000">Dinero de $1.000.000</option>
+                        <option value="otro">Otro (Personalizado)</option>
+                    </select>
+                    <input type="text" id="cfgPremioCustom" placeholder="Ej: Gran Rifa Especial" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 hidden focus:outline-none focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 uppercase mb-1">Lotería / Sorteo</label>
+                    <select id="cfgLoteriaSelect" onchange="actualizarDiasLoteria()" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white mb-2 focus:outline-none focus:border-red-500">
+                        <option value="Lotería de Boyacá">Lotería de Boyacá (Sábados)</option>
+                        <option value="Lotería de Cundinamarca">Lotería de Cundinamarca (Lunes)</option>
+                        <option value="Lotería del Tolima">Lotería del Tolima (Lunes)</option>
+                        <option value="Lotería de la Cruz Roja">Lotería de la Cruz Roja (Martes)</option>
+                        <option value="Lotería de Huila">Lotería del Huila (Martes)</option>
+                        <option value="Lotería de Manizales">Lotería de Manizales (Miércoles)</option>
+                        <option value="Lotería del Valle">Lotería del Valle (Miércoles)</option>
+                        <option value="Lotería de Bogotá">Lotería de Bogotá (Jueves)</option>
+                        <option value="Lotería del Quindío">Lotería del Quindío (Jueves)</option>
+                        <option value="Lotería de Medellín">Lotería de Medellín (Viernes)</option>
+                        <option value="Lotería de Santander">Lotería de Santander (Viernes)</option>
+                        <option value="Lotería del Cauca">Lotería del Cauca (Sábados)</option>
+                        <option value="Lotería de Risaralda">Lotería de Risaralda (Viernes)</option>
+                        <option value="otro">Otra (Personalizada)</option>
+                    </select>
+                    <input type="text" id="cfgLoteriaCustom" placeholder="Ej: Lotería Regional" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 hidden focus:outline-none focus:border-red-500">
+                    <p id="lblDiasPermitidos" class="text-[10px] text-amber-400 mt-1 font-semibold">ℹ️ Esta lotería juega los días: Sábados</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-300 uppercase mb-1">Fecha del Sorteo</label>
+                        <input type="date" id="cfgFecha" required onchange="validarFechaLoteria(this)" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-red-500">
+                        <span id="lblErrorFecha" class="text-[9px] text-rose-400 font-bold block mt-0.5"></span>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-300 uppercase mb-1">Valor por Número ($)</label>
+                        <input type="text" id="cfgValor" required placeholder="Ej: 5.000 o 10.000" oninput="formatearInputValor(this)" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-red-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-300 uppercase mb-1">Responsable</label>
+                        <input type="text" id="cfgResponsable" placeholder="Ej: Organizador" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-300 uppercase mb-1">Celular de Pagos</label>
+                        <input type="text" id="cfgCelPagos" placeholder="Ej: 3132264261" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-red-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 uppercase mb-1">Medio de Pago</label>
+                    <input type="text" id="cfgMedioPago" placeholder="Ej: Nequi / Daviplata" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-red-500">
+                </div>
+                <div class="pt-3 flex items-center justify-end gap-2">
+                    <button type="button" onclick="cerrarConfiguracion()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 py-2.5 rounded-xl font-medium transition">Cancelar</button>
+                    <button type="submit" id="btnGuardarConfig" class="bg-red-600 hover:bg-red-500 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-red-600/30 transition">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Diseñador IA Pro -->
+    <div id="modalAi" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-slate-800 px-6 py-4 border-b border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Diseñador IA Profesional
+                </h3>
+                <button onclick="cerrarAiModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-300 uppercase mb-1">Describe tu idea para conectar con internet:</label>
                     <div class="flex gap-2">
-                        <input type="text" id="promptIA" placeholder="Ej. Estilo navideño dorado para lechona..." class="w-full p-2.5 bg-black/60 border border-purple-500/40 rounded-xl text-white text-xs focus:outline-none focus:ring-2 focus:ring-purple-400">
-                        <button type="button" onclick="generarTalonarioConIA()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shrink-0 flex items-center gap-1">
-                            <i class="fa-solid fa-arrows-rotate"></i> Generar
+                        <input type="text" id="aiPromptInput" placeholder="Ej: Lechona navideña con luces, Billetes de dólar y oro..." class="flex-1 px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-purple-500">
+                        <button onclick="generarImagenAi()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-xl font-bold shadow transition flex items-center gap-1.5 shrink-0">
+                            <i class="fa-solid fa-bolt"></i> Buscar
                         </button>
                     </div>
                 </div>
 
-                <!-- Vista Previa Generada por IA -->
-                <div class="border border-purple-500/40 rounded-2xl p-2 bg-black/60 text-center">
-                    <p class="text-xs text-purple-300 mb-2 font-semibold"><i class="fa-solid fa-eye"></i> Vista Previa del Diseño IA:</p>
-                    <canvas id="canvasIA" width="800" height="1000" class="w-full max-h-56 object-contain mx-auto rounded-lg shadow-md border border-gray-700"></canvas>
+                <div>
+                    <span class="block font-bold text-slate-400 uppercase mb-2">O elige una plantilla profesional de alta calidad:</span>
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <button onclick="seleccionarPlantillaPreset('lechon')" class="p-2.5 rounded-2xl border border-slate-700 bg-slate-800/80 hover:border-purple-500 text-left transition space-y-1">
+                            <div class="text-amber-400 font-bold">🐷 Lechona</div>
+                            <div class="text-[10px] text-slate-400">Navidad & Lechona</div>
+                        </button>
+                        <button onclick="seleccionarPlantillaPreset('efectivo')" class="p-2.5 rounded-2xl border border-slate-700 bg-slate-800/80 hover:border-purple-500 text-left transition space-y-1">
+                            <div class="text-emerald-400 font-bold">💵 Efectivo</div>
+                            <div class="text-[10px] text-slate-400">Billetes y lujos</div>
+                        </button>
+                        <button onclick="seleccionarPlantillaPreset('dorado')" class="p-2.5 rounded-2xl border border-slate-700 bg-slate-800/80 hover:border-purple-500 text-left transition space-y-1">
+                            <div class="text-amber-300 font-bold">✨ Dorado</div>
+                            <div class="text-[10px] text-slate-400">Luces y regalos</div>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-between gap-3 pt-2">
-                    <button type="button" onclick="cerrarModalIA()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-2.5 rounded-xl transition text-xs">Cancelar</button>
-                    <button type="button" onclick="aceptarDisenoIA()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-xl transition shadow-lg text-xs flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-check"></i> Elegir este Diseño
-                    </button>
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-3 space-y-2">
+                    <span class="block font-bold text-slate-300 text-center">Vista Previa de la Plantilla Profesional:</span>
+                    <div class="relative rounded-xl overflow-hidden aspect-[3/4] bg-slate-950 flex items-center justify-center border border-slate-700">
+                        <img id="aiPreviewImg" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-85" alt="Plantilla IA">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/60 flex flex-col justify-between p-4 text-center">
+                            <div>
+                                <h4 id="previewTitulo" class="font-title text-xl text-red-500 drop-shadow-md">RIFA DE COJÍN DE LECHONA</h4>
+                                <p id="previewSub" class="text-[11px] text-amber-300 font-bold drop-shadow">Juega: Sábado, 26 de Diciembre de 2026 • Lotería de Boyacá</p>
+                            </div>
+                            <div class="bg-emerald-900/90 border border-emerald-500/50 py-1.5 px-3 rounded-xl mx-auto shadow-lg">
+                                <span class="text-[11px] text-emerald-200 font-bold">Valor del Número: <span id="previewValor" class="text-white font-black">$5.000</span></span>
+                            </div>
+                            <div class="bg-white/95 text-slate-950 p-2.5 rounded-xl shadow-xl space-y-1 border border-slate-300">
+                                <p class="text-[10px] font-black uppercase text-slate-700">Talonario (00 al 99)</p>
+                                <div class="grid grid-cols-10 gap-0.5 text-[8px] font-bold text-slate-600 bg-slate-200 p-1 rounded">
+                                    <span>00</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>09</span>
+                                    <span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="bg-slate-800 px-6 py-3.5 border-t border-slate-700 flex justify-between items-center shrink-0">
+                <button type="button" onclick="cerrarAiModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 py-2.5 rounded-xl font-medium transition text-xs">Cancelar</button>
+                <button type="button" onclick="aplicarPlantillaAi()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-emerald-600/30 transition text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i> Elegir y Aplicar Plantilla
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal para Talonario WhatsApp con Imagen y Emojis -->
-    <div id="modalWhatsApp" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-gray-900 border border-emerald-500/50 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative text-gray-100">
-            <button type="button" onclick="cerrarModalWhatsApp()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-emerald-950 font-bold text-xl flex items-center justify-center shadow-lg">
-                    <i class="fa-brands fa-whatsapp"></i>
-                </div>
-                <div>
-                    <h3 class="title-font text-2xl font-bold text-emerald-300">Talonario Visual para WhatsApp</h3>
-                    <p class="text-xs text-gray-300">Elige tu emoji del teclado para tapar los números ocupados</p>
-                </div>
+    <!-- Modal WhatsApp Talonario Visual -->
+    <div id="modalWhatsApp" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="bg-slate-800 px-6 py-4 border-b border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i> Talonario Visual para WhatsApp
+                </h3>
+                <button onclick="cerrarWhatsAppModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-
-            <div class="space-y-4">
-                <div class="bg-emerald-950/40 p-3 rounded-2xl border border-emerald-500/30 flex items-center justify-between gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-emerald-300 uppercase">Emoji para números ocupados</label>
-                        <p class="text-[10px] text-gray-400">Toca el recuadro para abrir tu teclado y escoger el emoji (Ej. 🐷, 🐖, ❌)</p>
-                    </div>
-                    <div>
-                        <input type="text" id="inputEmojiTapa" value="❌" maxlength="4" oninput="actualizarCanvasWhatsApp()" class="w-14 h-12 text-center bg-black/60 border border-emerald-500 rounded-xl text-2xl focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer">
-                    </div>
-                </div>
-
-                <!-- Canvas Oculto para Generar la Imagen -->
-                <canvas id="canvasWhatsApp" width="800" height="1000" class="hidden"></canvas>
-
-                <!-- Vista Previa de la Imagen Generada -->
-                <div class="border border-emerald-500/40 rounded-2xl p-2 bg-black/55 text-center">
-                    <p class="text-xs text-emerald-300 mb-2 font-semibold"><i class="fa-solid fa-eye"></i> Vista previa de la imagen:</p>
-                    <img id="previewImgWhatsApp" class="max-h-60 mx-auto rounded-xl shadow-lg border border-gray-700" alt="Vista previa talonario">
-                </div>
-                
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                    <button type="button" onclick="descargarImagenTalonario()" class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 border border-gray-700">
-                        <i class="fa-solid fa-download"></i> Descargar Imagen
-                    </button>
-                    <button type="button" onclick="enviarImagenWhatsApp()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-lg">
-                        <i class="fa-brands fa-whatsapp text-base"></i> Enviar Imagen por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Reportes / Estadísticas -->
-    <div id="modalEstadisticas" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-gray-900 border border-amber-500/50 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative text-gray-100">
-            <button type="button" onclick="cerrarModalEstadisticas()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-red-950 font-bold text-xl flex items-center justify-center shadow-lg">
-                    <i class="fa-solid fa-receipt"></i>
-                </div>
-                <div>
-                    <h3 class="title-font text-2xl font-bold text-amber-300">Resumen y Reporte General</h3>
-                    <p id="repPremioTitulo" class="text-xs text-gray-300">Premio: Cojín de Lechona</p>
-                </div>
-            </div>
-
-            <div class="space-y-4 text-sm">
-                <div class="bg-gray-800/80 p-4 rounded-2xl border border-gray-700 space-y-2">
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Total Números Vendidos:</span>
-                        <span id="repOcupados" class="font-bold text-white">0 / 100</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Números Disponibles:</span>
-                        <span id="repDisponibles" class="font-bold text-emerald-400">100</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Total Recaudado (Pagados):</span>
-                        <span id="repRecaudado" class="font-bold text-amber-400">$0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Saldo Pendiente (Debe):</span>
-                        <span id="repDebe" class="font-bold text-sky-400">$0</span>
-                    </div>
-                    <div class="flex justify-between border-t border-gray-700 pt-2">
-                        <span class="text-gray-300 font-semibold">Meta Total Recaudación:</span>
-                        <span id="repMetaTotal" class="font-extrabold text-white">$500.000</span>
+            <div class="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 space-y-3">
+                    <label class="block font-bold text-slate-300 uppercase text-[11px]">Emoji para números ocupados:</label>
+                    <div class="flex items-center gap-3">
+                        <input type="text" id="inputEmojiCustom" value="🐷" maxlength="4" oninput="actualizarVistaPreviaWp()" class="w-16 h-14 bg-slate-900 border border-slate-700 rounded-2xl text-center text-2xl focus:outline-none focus:border-emerald-500 font-bold shadow-inner">
+                        <div class="text-[11px] text-slate-400">
+                            Toca la casilla y escribe cualquier emoji desde tu teclado (Ej. 🐷, 🐖, ❌, ⭐, 🔥, 💰).
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <h4 class="font-bold text-amber-300 mb-2 flex items-center gap-2"><i class="fa-solid fa-list-check"></i> Listado de Apartados</h4>
-                    <div id="listaCompradoresContainer" class="max-h-60 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-                        <!-- Llenado dinámico -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-3 space-y-2 text-center">
+                    <span class="block font-bold text-slate-300 text-[11px]">Vista previa de la imagen para WhatsApp:</span>
+                    <div id="whatsappCanvasContainer" class="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-950 flex flex-col justify-between p-4 shadow-xl border border-slate-700 mx-auto max-w-[320px]">
+                        <img id="wpBgImg" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Fondo">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/70 flex flex-col justify-between p-3.5 text-center">
+                            <div>
+                                <h4 id="wpTitulo" class="font-title text-lg text-red-500 drop-shadow">RIFA DE COJÍN DE LECHONA</h4>
+                                <p id="wpSub" class="text-[10px] text-amber-300 font-bold">Juega: Sábado, 26 de Diciembre de 2026 • Lotería de Boyacá</p>
+                            </div>
+                            <div class="bg-white/95 text-slate-950 p-2.5 rounded-xl shadow-xl space-y-1 border border-slate-300 my-auto">
+                                <p class="text-[10px] font-black uppercase text-slate-800">TALONARIO (00 al 99)</p>
+                                <div id="wpGridMini" class="grid grid-cols-10 gap-0.5 text-[8px] font-bold bg-slate-100 p-1 rounded text-slate-700">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+                            <div class="bg-emerald-950/90 border border-emerald-500/50 py-1.5 px-3 rounded-xl text-emerald-200 text-[10px] font-bold">
+                                🟢 = Libre | <span id="wpEmojiLabel">🐷</span> = Ocupado | ¡Aparta tu número!
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="mt-6 pt-4 border-t border-gray-800 flex justify-end">
-                <button type="button" onclick="cerrarModalEstadisticas()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-5 py-2.5 rounded-xl transition text-sm">Cerrar</button>
+            <div class="bg-slate-800 px-6 py-3.5 border-t border-slate-700 flex flex-wrap justify-between items-center gap-2 shrink-0">
+                <button onclick="descargarImagenTalonario()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-xl font-semibold transition text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Descargar Imagen
+                </button>
+                <button onclick="enviarWhatsAppImagen()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-emerald-600/30 transition text-xs flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Enviar Imagen por WhatsApp
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 border border-amber-500 text-white px-5 py-3 rounded-2xl shadow-2xl z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
-        <span id="toastMsg" class="font-medium text-sm">Operación exitosa</span>
+    <!-- Modal Reporte -->
+    <div id="modalReportes" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-slate-800 px-6 py-4 border-b border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-amber-400"></i> Reporte de Compradores
+                </h3>
+                <button onclick="cerrarReportesModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 space-y-4 overflow-y-auto flex-1 text-xs">
+                <div id="listaReportes" class="space-y-2">
+                    <!-- JS generated list -->
+                </div>
+            </div>
+            <div class="bg-slate-800 px-6 py-3.5 border-t border-slate-700 flex justify-end shrink-0">
+                <button onclick="cerrarReportesModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 py-2 rounded-xl font-semibold text-xs">Cerrar</button>
+            </div>
+        </div>
     </div>
 
+    <!-- Script Principal -->
     <script>
-        let rifaData = JSON.parse(localStorage.getItem('rifa_lechona_data')) || {};
-        let configData = JSON.parse(localStorage.getItem('rifa_lechona_config')) || {
+        let configRifa = {
             premio: "Cojín de Lechona",
-            valor: 5000,
-            fecha: "2026-12-26",
             loteria: "Lotería de Boyacá",
-            responsable: "",
+            fecha: "2026-12-26",
+            valor: 5000,
+            responsable: "Organizador",
             medioPago: "Nequi / Daviplata",
-            celularPago: "",
-            emojiTapa: "❌"
+            celPagos: "3132264261",
+            bgUrl: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80"
         };
+
+        let rifaData = JSON.parse(localStorage.getItem('rifa_datos_00_99')) || {};
+        let configGuardada = JSON.parse(localStorage.getItem('rifa_config_00_99'));
+        if (configGuardada) configRifa = configGuardada;
+
         let filtroActual = 'todos';
-        let promptTemporalIA = "";
+        let presetSeleccionadoUrl = configRifa.bgUrl;
+
+        // Mapeo de días de la semana en que juega cada lotería (0=Domingo, 1=Lunes, ..., 6=Sábado)
+        const diasLoteriaMap = {
+            "Lotería de Cundinamarca": [1], // Lunes
+            "Lotería del Tolima": [1], // Lunes
+            "Lotería de la Cruz Roja": [2], // Martes
+            "Lotería de Huila": [2], // Martes
+            "Lotería de Manizales": [3], // Miércoles
+            "Lotería del Valle": [3], // Miércoles
+            "Lotería de Bogotá": [4], // Jueves
+            "Lotería del Quindío": [4], // Jueves
+            "Lotería de Medellín": [5], // Viernes
+            "Lotería de Santander": [5], // Viernes
+            "Lotería de Risaralda": [5], // Viernes
+            "Lotería de Boyacá": [6], // Sábado
+            "Lotería del Cauca": [6] // Sábado
+        };
+
+        const diasNombres = ["Domingos", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábados"];
+
+        const presetsAi = {
+            lechon: {
+                url: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80",
+                title: "RIFA DE COJÍN DE LECHONA"
+            },
+            efectivo: {
+                url: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=800&q=80",
+                title: "GRAN RIFA DE EFECTIVO"
+            },
+            dorado: {
+                url: "https://images.unsplash.com/photo-1512389142860-9c449e580e43?auto=format&fit=crop&w=800&q=80",
+                title: "RIFA NAVIDEÑA DORADA"
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
-            inicializarConfigUI();
+            actualizarInterfazConfig();
             renderizarGrid();
             actualizarEstadisticas();
         });
 
-        function inicializarConfigUI() {
-            const selectPremio = document.getElementById('configPremio');
-            const divCustom = document.getElementById('divPremioPersonalizado');
-            const inputCustom = document.getElementById('configPremioCustom');
-
-            const premiosPredeterminados = ["Cojín de Lechona", "Dinero de $500.000", "Dinero de $1.000.000"];
-            if (premiosPredeterminados.includes(configData.premio)) {
-                selectPremio.value = configData.premio;
-                divCustom.classList.add('hidden');
-            } else {
-                selectPremio.value = "personalizado";
-                divCustom.classList.remove('hidden');
-                inputCustom.value = configData.premio;
-            }
-
-            document.getElementById('configValor').value = Number(configData.valor || 0).toLocaleString('es-CO');
-            document.getElementById('configFecha').value = configData.fecha || "2026-12-26";
-            document.getElementById('configLoteria').value = configData.loteria || "Lotería de Boyacá";
-            document.getElementById('configResponsable').value = configData.responsable || "";
-            document.getElementById('configMedioPago').value = configData.medioPago || "";
-            document.getElementById('configCelularPago').value = configData.celularPago || "";
-        }
-
-        function cambiarPremioSelect() {
-            const select = document.getElementById('configPremio');
-            const divCustom = document.getElementById('divPremioPersonalizado');
-            if (select.value === 'personalizado') {
-                divCustom.classList.remove('hidden');
-                configData.premio = document.getElementById('configPremioCustom').value || "Premio Especial";
-            } else {
-                divCustom.classList.add('hidden');
-                configData.premio = select.value;
-            }
-            guardarConfiguracion();
+        function formatearMoneda(val) {
+            const num = Number(String(val).replace(/\D/g, '')) || 0;
+            return num.toLocaleString('es-CO');
         }
 
         function formatearInputValor(input) {
-            let val = input.value.replace(/\D/g, '');
-            if (val === '') {
+            let limpio = input.value.replace(/\D/g, '');
+            if (limpio) {
+                input.value = Number(limpio).toLocaleString('es-CO');
+            } else {
                 input.value = '';
-                configData.valor = 0;
-            } else {
-                let num = parseInt(val, 10);
-                configData.valor = num;
-                input.value = num.toLocaleString('es-CO');
-            }
-            guardarConfiguracion();
-        }
-
-        function guardarConfiguracion() {
-            const select = document.getElementById('configPremio');
-            if (select.value !== 'personalizado') {
-                configData.premio = select.value;
-            } else {
-                configData.premio = document.getElementById('configPremioCustom').value.trim() || "Premio Especial";
-            }
-
-            configData.fecha = document.getElementById('configFecha').value;
-            configData.loteria = document.getElementById('configLoteria').value;
-            configData.responsable = document.getElementById('configResponsable').value.trim();
-            configData.medioPago = document.getElementById('configMedioPago').value.trim();
-            configData.celularPago = document.getElementById('configCelularPago').value.trim();
-
-            localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-            actualizarEstadisticas();
-        }
-
-        // Asistente IA con vista previa y botón de elegir
-        function abrirModalIA() {
-            document.getElementById('promptIA').value = configData.premio;
-            renderizarCanvasIA(configData.premio);
-            document.getElementById('modalIA').classList.remove('hidden');
-        }
-        function cerrarModalIA() {
-            document.getElementById('modalIA').classList.add('hidden');
-        }
-        function generarTalonarioConIA() {
-            const prompt = document.getElementById('promptIA').value.trim();
-            if (!prompt) {
-                mostrarToast("Escribe una descripción");
-                return;
-            }
-            promptTemporalIA = prompt;
-            renderizarCanvasIA(prompt);
-            mostrarToast("Diseño generado con IA. Revisa y haz clic en Elegir.");
-        }
-
-        function renderizarCanvasIA(textoPremio) {
-            const canvas = document.getElementById('canvasIA');
-            const ctx = canvas.getContext('2d');
-
-            ctx.fillStyle = '#064e3b';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            let grad = ctx.createLinearGradient(0, 0, 0, 220);
-            grad.addColorStop(0, '#7f1d1d');
-            grad.addColorStop(1, '#14532d');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, canvas.width, 220);
-
-            ctx.fillStyle = '#fbbf24';
-            ctx.font = 'bold 45px Fredoka, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText("Rifa de " + textoPremio, canvas.width / 2, 75);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 22px Inter, sans-serif';
-            const valorBoleto = parseInt(configData.valor) || 0;
-            ctx.fillText(`Valor del Número: $${valorBoleto.toLocaleString('es-CO')}`, canvas.width / 2, 130);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.roundRect(40, 240, 720, 720, 20);
-            ctx.fill();
-
-            ctx.fillStyle = '#111827';
-            ctx.font = 'bold 28px Fredoka, sans-serif';
-            ctx.fillText("Talonario (00 al 99)", canvas.width / 2, 290);
-
-            const startX = 65;
-            const startY = 320;
-            const cellWidth = 67;
-            const cellHeight = 60;
-
-            for (let i = 0; i <= 99; i++) {
-                const col = i % 10;
-                const row = Math.floor(i / 10);
-                const x = startX + col * cellWidth;
-                const y = startY + row * cellHeight;
-                const numStr = i < 10 ? `0${i}` : `${i}`;
-
-                ctx.strokeStyle = '#d1d5db';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x, y, cellWidth, cellHeight);
-
-                ctx.fillStyle = '#ecfdf5';
-                ctx.fillRect(x, y, cellWidth, cellHeight);
-                ctx.fillStyle = '#065f46';
-                ctx.font = 'bold 20px Inter, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(numStr, x + cellWidth / 2, y + cellHeight / 2 + 7);
             }
         }
 
-        function aceptarDisenoIA() {
-            const prompt = document.getElementById('promptIA').value.trim() || promptTemporalIA;
-            if (prompt) {
-                configData.premio = prompt;
-                localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-                inicializarConfigUI();
-                renderizarGrid();
-                actualizarEstadisticas();
-                mostrarToast("¡Diseño de IA aplicado con éxito!");
+        function formatearFechaLarga(fechaStr) {
+            if (!fechaStr) return '';
+            const partes = fechaStr.split('-');
+            if (partes.length !== 3) return fechaStr;
+            const anio = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1;
+            const dia = parseInt(partes[2], 10);
+            
+            const fechaObj = new Date(anio, mes, dia);
+            if (isNaN(fechaObj.getTime())) return fechaStr;
+
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            let fechaFormateada = fechaObj.toLocaleDateString('es-CO', opciones);
+            return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+        }
+
+        function actualizarInterfazConfig() {
+            document.getElementById('lblPremio').innerText = configRifa.premio;
+            document.getElementById('badgePremio').innerText = configRifa.premio;
+            document.getElementById('lblLoteria').innerText = configRifa.loteria;
+            document.getElementById('lblFecha').innerText = formatearFechaLarga(configRifa.fecha);
+            document.getElementById('lblValor').innerText = `$${formatearMoneda(configRifa.valor)}`;
+            document.getElementById('statTotalRecaudable').innerText = `$${(100 * Number(String(configRifa.valor).replace(/\D/g, ''))).toLocaleString('es-CO')}`;
+            if (configRifa.bgUrl) {
+                document.getElementById('wpBgImg').src = configRifa.bgUrl;
+                document.getElementById('aiPreviewImg').src = configRifa.bgUrl;
             }
-            cerrarModalIA();
         }
 
-        // Talonario WhatsApp con imagen y emoji personalizado
-        function abrirModalTalonarioWhatsApp() {
-            document.getElementById('inputEmojiTapa').value = configData.emojiTapa || "❌";
-            actualizarCanvasWhatsApp();
-            document.getElementById('modalWhatsApp').classList.remove('hidden');
-        }
-        function cerrarModalWhatsApp() {
-            document.getElementById('modalWhatsApp').classList.add('hidden');
-        }
-
-        function actualizarCanvasWhatsApp() {
-            const emojiTapa = document.getElementById('inputEmojiTapa').value || '❌';
-            configData.emojiTapa = emojiTapa;
-            localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-
-            const canvas = document.getElementById('canvasWhatsApp');
-            const ctx = canvas.getContext('2d');
-
-            ctx.fillStyle = '#064e3b';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            let grad = ctx.createLinearGradient(0, 0, 0, 250);
-            grad.addColorStop(0, '#7f1d1d');
-            grad.addColorStop(1, '#14532d');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, canvas.width, 250);
-
-            ctx.fillStyle = '#fbbf24';
-            ctx.font = 'bold 50px Fredoka, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText("Rifa " + (configData.premio || "Cojín de Lechona"), canvas.width / 2, 85);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 24px Inter, sans-serif';
-            const valorBoleto = parseInt(configData.valor) || 0;
-            ctx.fillText(`Juega: ${configData.fecha || 'Por definir'} | Lotería: ${configData.loteria}`, canvas.width / 2, 135);
-            ctx.fillText(`Valor del Número: $${valorBoleto.toLocaleString('es-CO')}`, canvas.width / 2, 175);
-            if(configData.responsable || configData.medioPago) {
-                ctx.fillStyle = '#fbbf24';
-                ctx.font = '20px Inter, sans-serif';
-                ctx.fillText(`Pagos: ${configData.medioPago || 'Efectivo'} al ${configData.celularPago || ''} (${configData.responsable || ''})`, canvas.width / 2, 215);
+        function subirTalonarioImagen(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    configRifa.bgUrl = e.target.result;
+                    localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa));
+                    document.getElementById('wpBgImg').src = configRifa.bgUrl;
+                    document.getElementById('aiPreviewImg').src = configRifa.bgUrl;
+                    alert("¡Talonario/Fondo personalizado subido y aplicado con éxito!");
+                };
+                reader.readAsDataURL(file);
             }
-
-            ctx.fillStyle = '#ffffff';
-            ctx.roundRect(50, 260, 700, 680, 20);
-            ctx.fill();
-
-            ctx.fillStyle = '#111827';
-            ctx.font = 'bold 32px Fredoka, sans-serif';
-            ctx.fillText("TALONARIO (00 al 99)", canvas.width / 2, 315);
-
-            const startX = 85;
-            const startY = 350;
-            const cellWidth = 63;
-            const cellHeight = 52;
-
-            for (let i = 0; i <= 99; i++) {
-                const col = i % 10;
-                const row = Math.floor(i / 10);
-                const x = startX + col * cellWidth;
-                const y = startY + row * cellHeight;
-
-                const numStr = i < 10 ? `0${i}` : `${i}`;
-                const ocupado = rifaData[i] !== undefined;
-
-                ctx.strokeStyle = '#d1d5db';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x, y, cellWidth, cellHeight);
-
-                if (ocupado) {
-                    ctx.fillStyle = '#fee2e2';
-                    ctx.fillRect(x, y, cellWidth, cellHeight);
-                    ctx.fillStyle = '#991b1b';
-                    ctx.font = 'bold 22px Inter, sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(emojiTapa, x + cellWidth / 2, y + cellHeight / 2 + 8);
-                } else {
-                    ctx.fillStyle = '#ecfdf5';
-                    ctx.fillRect(x, y, cellWidth, cellHeight);
-                    ctx.fillStyle = '#065f46';
-                    ctx.font = 'bold 20px Inter, sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(numStr, x + cellWidth / 2, y + cellHeight / 2 + 7);
-                }
-            }
-
-            ctx.fillStyle = '#fbbf24';
-            ctx.font = 'bold 22px Inter, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText("🟢 = Libre  |  " + emojiTapa + " = Ocupado. ¡Aparta tu número ya!", canvas.width / 2, 960);
-
-            document.getElementById('previewImgWhatsApp').src = canvas.toDataURL('image/png');
         }
 
-        function descargarImagenTalonario() {
-            const canvas = document.getElementById('canvasWhatsApp');
-            const link = document.createElement('a');
-            link.download = `talonario_rifa_${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            mostrarToast("Imagen descargada con éxito");
-        }
-
-        function enviarImagenWhatsApp() {
-            const canvas = document.getElementById('canvasWhatsApp');
-            canvas.toBlob(blob => {
-                const file = new File([blob], "talonario_rifa.png", { type: "image/png" });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share({
-                        files: [file],
-                        title: 'Talonario Rifa',
-                        text: `¡Aparta tu número para la rifa de ${configData.premio}!`
-                    }).catch(() => {});
-                } else {
-                    descargarImagenTalonario();
-                    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(`¡Hola! Te comparto el talonario de la rifa de ${configData.premio}. ¡Apoya comprando tu número!`)}`;
-                    window.open(url, '_blank');
-                    mostrarToast("Imagen descargada. Adjúntala en WhatsApp.");
-                }
-            }, 'image/png');
-        }
-
-        // Grilla 00 al 99
-        function renderizarGrid() {
+        function renderizarGrid(filtro = 'todos', busqueda = '') {
             const grid = document.getElementById('gridNumeros');
             grid.innerHTML = '';
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
             for (let i = 0; i <= 99; i++) {
-                const numStr = i < 10 ? `0${i}` : `${i}`;
-                const datos = rifaData[i];
+                const strNum = i < 10 ? '0' + i : i.toString();
+                const datos = rifaData[strNum];
+                let estado = 'libre';
+                let nombre = '';
 
-                let cumpleFiltroEstado = true;
-                if (filtroActual === 'disponible') cumpleFiltroEstado = !datos;
-                if (filtroActual === 'pagado') cumpleFiltroEstado = datos && datos.estado === 'pagado';
-                if (filtroActual === 'debe') cumpleFiltroEstado = datos && datos.estado === 'debe';
-
-                let cumpleBusqueda = true;
-                if (searchTerm && datos) {
-                    cumpleBusqueda = datos.nombre.toLowerCase().includes(searchTerm) || datos.telefono.includes(searchTerm) || numStr.includes(searchTerm);
-                } else if (searchTerm && !datos) {
-                    cumpleBusqueda = numStr.includes(searchTerm);
+                if (datos) {
+                    estado = datos.estado;
+                    nombre = datos.nombre;
                 }
 
-                const card = document.createElement('div');
-                card.className = `number-card relative rounded-xl p-1 sm:p-2 flex flex-col items-center justify-center cursor-pointer shadow-md border transition-all aspect-square ${
-                    !datos ? 'bg-emerald-950/40 border-emerald-500/40 hover:bg-emerald-900/60 text-emerald-200' :
-                    datos.estado === 'pagado' ? 'bg-red-950/80 border-red-500/70 hover:bg-red-900/80 text-red-200 ring-1 ring-red-500' :
-                    'bg-amber-950/80 border-amber-500/70 hover:bg-amber-900/80 text-amber-200 ring-1 ring-amber-500'
-                }`;
+                if (filtro === 'libres' && datos) continue;
+                if (filtro === 'pagados' && (!datos || datos.estado !== 'pagado')) continue;
 
-                if (!cumpleFiltroEstado || !cumpleBusqueda) {
-                    card.classList.add('opacity-30', 'scale-95');
+                if (busqueda) {
+                    const term = busqueda.toLowerCase();
+                    const coincideNum = strNum.includes(term);
+                    const coincideNombre = nombre && nombre.toLowerCase().includes(term);
+                    if (!coincideNum && !coincideNombre) continue;
                 }
 
-                card.innerHTML = `
-                    <span class="title-font text-base sm:text-lg font-extrabold">${numStr}</span>
-                    <div class="mt-0.5 text-center w-full">
-                        ${!datos ? 
-                            '<span class="text-[7px] sm:text-[8px] font-semibold bg-emerald-500/20 text-emerald-300 px-1 rounded block">Libre</span>' :
-                            datos.estado === 'pagado' ?
-                            `<span class="text-[7px] sm:text-[8px] font-bold bg-red-500/30 text-red-300 px-0.5 rounded block truncate">${datos.nombre.split(' ')[0]}</span>` :
-                            `<span class="text-[7px] sm:text-[8px] font-bold bg-amber-500/30 text-amber-300 px-0.5 rounded block truncate">Debe</span>`
-                        }
-                    </div>
+                const btn = document.createElement('div');
+                let clasesColor = "bg-emerald-600/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-600/30";
+
+                if (estado === 'pagado') {
+                    clasesColor = "bg-rose-600 text-white border-rose-500 shadow-md shadow-rose-600/20 font-bold";
+                } else if (estado === 'debe') {
+                    clasesColor = "bg-amber-500 text-slate-950 border-amber-400 font-bold shadow-md shadow-amber-500/20";
+                }
+
+                btn.className = `aspect-square rounded-2xl border flex flex-col items-center justify-between p-1.5 cursor-pointer transition-all duration-150 relative group ${clasesColor}`;
+                btn.onclick = () => abrirModalNumero(strNum);
+
+                btn.innerHTML = `
+                    <span class="text-[9px] opacity-75 font-semibold">#${strNum}</span>
+                    <span class="text-base font-black">${strNum}</span>
+                    <span class="w-full text-[8px] truncate text-center px-0.5 rounded ${datos ? 'bg-black/25 text-white' : 'opacity-60'}">${nombre ? nombre : 'Libre'}</span>
                 `;
-                card.onclick = () => abrirModalNumero(i);
-                grid.appendChild(card);
+                grid.appendChild(btn);
             }
         }
 
-        function abrirModalNumero(num) {
-            const numStr = num < 10 ? `0${num}` : `${num}`;
-            document.getElementById('inputNumeroId').value = num;
-            document.getElementById('modalNumeroBadge').innerText = numStr;
-            const datos = rifaData[num];
+        function abrirModalNumero(strNum) {
+            document.getElementById('inputNumeroHidden').value = strNum;
+            document.getElementById('modalTituloNumero').innerText = `#${strNum}`;
+            const datos = rifaData[strNum];
             const btnLiberar = document.getElementById('btnLiberar');
 
             if (datos) {
-                document.getElementById('modalTitulo').innerText = `Editar #${numStr}`;
-                document.getElementById('modalSubtitulo').innerText = 'Modifica o libera el número';
-                document.getElementById('inputNombre').value = datos.nombre;
-                document.getElementById('inputTelefono').value = datos.telefono;
+                document.getElementById('inputNombre').value = datos.nombre || '';
+                document.getElementById('inputCelular').value = datos.celular || '';
                 document.getElementById('inputDireccion').value = datos.direccion || '';
-                document.getElementById('inputEstado').value = datos.estado;
+                document.getElementById('selectEstado').value = datos.estado || 'pagado';
                 btnLiberar.classList.remove('hidden');
             } else {
-                document.getElementById('modalTitulo').innerText = `Apartar #${numStr}`;
-                document.getElementById('modalSubtitulo').innerText = 'Registra los datos del comprador';
-                document.getElementById('formComprador').reset();
-                document.getElementById('inputNumeroId').value = num;
-                document.getElementById('inputEstado').value = 'pagado';
+                document.getElementById('inputNombre').value = '';
+                document.getElementById('inputCelular').value = '';
+                document.getElementById('inputDireccion').value = '';
+                document.getElementById('selectEstado').value = 'pagado';
                 btnLiberar.classList.add('hidden');
             }
             document.getElementById('modalNumero').classList.remove('hidden');
@@ -772,115 +626,354 @@
 
         function guardarComprador(e) {
             e.preventDefault();
-            const num = document.getElementById('inputNumeroId').value;
+            const num = document.getElementById('inputNumeroHidden').value;
             rifaData[num] = {
-                nombre: document.getElementById('inputNombre').value.trim(),
-                telefono: document.getElementById('inputTelefono').value.trim(),
-                direccion: document.getElementById('inputDireccion').value.trim(),
-                estado: document.getElementById('inputEstado').value,
-                fecha: new Date().toLocaleDateString()
+                nombre: document.getElementById('inputNombre').value,
+                celular: document.getElementById('inputCelular').value,
+                direccion: document.getElementById('inputDireccion').value,
+                estado: document.getElementById('selectEstado').value
             };
-            guardarYActualizar(`Número guardado con éxito`);
+            localStorage.setItem('rifa_datos_00_99', JSON.stringify(rifaData));
             cerrarModal();
+            renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
+            actualizarEstadisticas();
         }
 
         function liberarNumeroActual() {
-            const num = document.getElementById('inputNumeroId').value;
-            if (confirm(`¿Liberar este número?`)) {
+            const num = document.getElementById('inputNumeroHidden').value;
+            if (confirm(`¿Liberar número #${num}?`)) {
                 delete rifaData[num];
-                guardarYActualizar(`Número liberado`);
+                localStorage.setItem('rifa_datos_00_99', JSON.stringify(rifaData));
                 cerrarModal();
+                renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
+                actualizarEstadisticas();
             }
-        }
-
-        function guardarYActualizar(msj) {
-            localStorage.setItem('rifa_lechona_data', JSON.stringify(rifaData));
-            renderizarGrid();
-            actualizarEstadisticas();
-            mostrarToast(msj);
         }
 
         function actualizarEstadisticas() {
-            let ocupados = 0, recaudado = 0, debe = 0;
-            const valorBoleto = parseInt(configData.valor) || 0;
+            let libres = 100;
+            let ocupados = 0;
+            let totalPagado = 0;
+            let totalDebe = 0;
+            const valNum = Number(String(configRifa.valor).replace(/\D/g, '')) || 0;
 
             for (let i = 0; i <= 99; i++) {
-                if (rifaData[i]) {
+                const s = i < 10 ? '0' + i : i.toString();
+                if (rifaData[s]) {
                     ocupados++;
-                    if (rifaData[i].estado === 'pagado') recaudado += valorBoleto;
-                    else debe += valorBoleto;
+                    libres--;
+                    if (rifaData[s].estado === 'pagado') totalPagado += valNum;
+                    else if (rifaData[s].estado === 'debe') totalDebe += valNum;
                 }
             }
-
-            document.getElementById('statDisponibles').innerText = 100 - ocupados;
+            document.getElementById('statLibres').innerText = libres;
             document.getElementById('statOcupados').innerText = ocupados;
-            document.getElementById('statRecaudado').innerText = `$${recaudado.toLocaleString('es-CO')}`;
-            document.getElementById('statDebe').innerText = `$${debe.toLocaleString('es-CO')}`;
+            document.getElementById('statPagados').innerText = `$${totalPagado.toLocaleString('es-CO')}`;
+            document.getElementById('statDebe').innerText = `$${totalDebe.toLocaleString('es-CO')}`;
         }
 
-        function cambiarFiltro(tipo) {
+        function filtrar(tipo) {
             filtroActual = tipo;
-            ['todos', 'disponible', 'pagado', 'debe'].forEach(t => {
-                const btn = document.getElementById(`btnFiltro-${t}`);
-                if (t === tipo) {
-                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-red-950 shadow";
-                } else {
-                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 text-gray-300 hover:bg-white/20";
+            ['todos', 'libres', 'pagados'].forEach(t => {
+                const btn = document.getElementById(`btnFiltro${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if(btn) {
+                    if (t === tipo) btn.className = "px-3 py-2 rounded-xl text-xs bg-red-600 text-white font-semibold transition shadow col-span-2 sm:col-span-1";
+                    else btn.className = "px-2.5 py-2 rounded-xl text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium transition col-span-2 sm:col-span-1";
                 }
             });
-            renderizarGrid();
+            renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
         }
 
-        function filtrarNumeros() {
-            renderizarGrid();
+        function buscarComprador() {
+            renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
         }
 
-        function abrirModalEstadisticas() {
-            let ocupados = 0, recaudado = 0, debe = 0, htmlList = '';
-            const valorBoleto = parseInt(configData.valor) || 0;
-            const container = document.getElementById('listaCompradoresContainer');
-            container.innerHTML = '';
+        function abrirConfiguracion() {
+            const selectPremio = document.getElementById('cfgPremioSelect');
+            const inputCustom = document.getElementById('cfgPremioCustom');
+            if (["Cojín de Lechona", "Dinero de $500.000", "Dinero de $1.000.000"].includes(configRifa.premio)) {
+                selectPremio.value = configRifa.premio;
+                inputCustom.classList.add('hidden');
+            } else {
+                selectPremio.value = "otro";
+                inputCustom.value = configRifa.premio;
+                inputCustom.classList.remove('hidden');
+            }
 
-            for (let i = 0; i <= 99; i++) {
-                if (rifaData[i]) {
-                    ocupados++;
-                    const item = rifaData[i];
-                    if (item.estado === 'pagado') recaudado += valorBoleto;
-                    else debe += valorBoleto;
+            const selectLoteria = document.getElementById('cfgLoteriaSelect');
+            const inputLoteriaCustom = document.getElementById('cfgLoteriaCustom');
+            let encontrada = false;
+            for(let opt of selectLoteria.options) {
+                if(opt.value === configRifa.loteria) {
+                    selectLoteria.value = configRifa.loteria;
+                    encontrada = true;
+                    break;
+                }
+            }
+            if(!encontrada) {
+                selectLoteria.value = "otro";
+                inputLoteriaCustom.value = configRifa.loteria;
+                inputLoteriaCustom.classList.remove('hidden');
+            } else {
+                inputLoteriaCustom.classList.add('hidden');
+            }
 
-                    const numStr = i < 10 ? `0${i}` : `${i}`;
-                    htmlList += `
-                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex items-center justify-between gap-3">
-                            <div>
-                                <span class="font-bold text-amber-300">#${numStr}</span> <span class="text-white text-xs">${item.nombre}</span>
-                                <p class="text-[10px] text-gray-400">Tel: ${item.telefono} ${item.direccion ? '| Dir: ' + item.direccion : ''}</p>
-                            </div>
-                            <span class="text-[10px] font-bold px-2 py-1 rounded border uppercase ${item.estado === 'pagado' ? 'bg-red-500/20 text-red-300' : 'bg-amber-500/20 text-amber-300'}">${item.estado}</span>
+            actualizarDiasLoteria();
+            document.getElementById('cfgFecha').value = configRifa.fecha;
+            validarFechaLoteria(document.getElementById('cfgFecha'));
+
+            document.getElementById('cfgValor').value = formatearMoneda(configRifa.valor);
+            document.getElementById('cfgResponsable').value = configRifa.responsable || '';
+            document.getElementById('cfgMedioPago').value = configRifa.medioPago || '';
+            document.getElementById('cfgCelPagos').value = configRifa.celPagos || '';
+            document.getElementById('modalConfig').classList.remove('hidden');
+        }
+
+        function cerrarConfiguracion() { document.getElementById('modalConfig').classList.add('hidden'); }
+
+        function verificarPremioPersonalizado() {
+            const val = document.getElementById('cfgPremioSelect').value;
+            const inputCustom = document.getElementById('cfgPremioCustom');
+            if (val === 'otro') { inputCustom.classList.remove('hidden'); inputCustom.focus(); }
+            else inputCustom.classList.add('hidden');
+        }
+
+        function actualizarDiasLoteria() {
+            const val = document.getElementById('cfgLoteriaSelect').value;
+            const inputCustom = document.getElementById('cfgLoteriaCustom');
+            const lblDias = document.getElementById('lblDiasPermitidos');
+
+            if (val === 'otro') {
+                inputCustom.classList.remove('hidden');
+                lblDias.innerText = "ℹ️ Lotería personalizada: Puedes elegir cualquier día de sorteo.";
+            } else {
+                inputCustom.classList.add('hidden');
+                const diasArr = diasLoteriaMap[val];
+                if (diasArr) {
+                    const nombres = diasArr.map(d => diasNombres[d]).join(' y ');
+                    lblDias.innerText = `ℹ️ Esta lotería juega los días: ${nombres}`;
+                }
+            }
+            validarFechaLoteria(document.getElementById('cfgFecha'));
+        }
+
+        function validarFechaLoteria(inputFecha) {
+            const valLoteria = document.getElementById('cfgLoteriaSelect').value;
+            const lblError = document.getElementById('lblErrorFecha');
+            const btnGuardar = document.getElementById('btnGuardarConfig');
+            
+            if (!inputFecha.value) {
+                lblError.innerText = "";
+                btnGuardar.disabled = false;
+                return;
+            }
+
+            if (valLoteria === 'otro') {
+                lblError.innerText = "";
+                btnGuardar.disabled = false;
+                return;
+            }
+
+            const diasPermitidos = diasLoteriaMap[valLoteria];
+            if (!diasPermitidos) {
+                lblError.innerText = "";
+                btnGuardar.disabled = false;
+                return;
+            }
+
+            const partes = inputFecha.value.split('-');
+            const anio = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1;
+            const dia = parseInt(partes[2], 10);
+            const fechaObj = new Date(anio, mes, dia);
+            const diaSemana = fechaObj.getDay(); // 0 al 6
+
+            if (!diasPermitidos.includes(diaSemana)) {
+                const nombresValidos = diasPermitidos.map(d => diasNombres[d]).join(' y ');
+                lblError.innerText = `⚠️ Atención: ${valLoteria} solo juega los días ${nombresValidos}. Seleccionaste un ${diasNombres[diaSemana]}.`;
+                btnGuardar.classList.add('opacity-50', 'cursor-not-allowed');
+                btnGuardar.title = "La fecha no corresponde a los días de sorteo de esta lotería";
+            } else {
+                lblError.innerText = "✅ Fecha correcta para esta lotería.";
+                lblError.className = "text-[9px] text-emerald-400 font-bold block mt-0.5";
+                btnGuardar.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnGuardar.title = "";
+            }
+        }
+
+        function guardarConfiguracion(e) {
+            e.preventDefault();
+            const selectPremio = document.getElementById('cfgPremioSelect').value;
+            let premioFinal = selectPremio === 'otro' ? (document.getElementById('cfgPremioCustom').value || 'Premio Especial') : selectPremio;
+
+            const selectLoteria = document.getElementById('cfgLoteriaSelect').value;
+            let loteriaFinal = selectLoteria === 'otro' ? (document.getElementById('cfgLoteriaCustom').value || 'Lotería Regional') : selectLoteria;
+
+            configRifa.premio = premioFinal;
+            configRifa.loteria = loteriaFinal;
+            configRifa.fecha = document.getElementById('cfgFecha').value;
+            configRifa.valor = document.getElementById('cfgValor').value;
+            configRifa.responsable = document.getElementById('cfgResponsable').value;
+            configRifa.medioPago = document.getElementById('cfgMedioPago').value;
+            configRifa.celPagos = document.getElementById('cfgCelPagos').value;
+
+            localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa));
+            actualizarInterfazConfig();
+            actualizarEstadisticas();
+            cerrarConfiguracion();
+        }
+
+        function reiniciarRifa() {
+            if (confirm("¿Borrar todos los registros y reiniciar la rifa 00-99?")) {
+                rifaData = {};
+                localStorage.removeItem('rifa_datos_00_99');
+                renderizarGrid();
+                actualizarEstadisticas();
+            }
+        }
+
+        function abrirAiModal() {
+            document.getElementById('aiPromptInput').value = "";
+            document.getElementById('aiPreviewImg').src = configRifa.bgUrl;
+            document.getElementById('previewTitulo').innerText = `RIFA DE ${configRifa.premio.toUpperCase()}`;
+            document.getElementById('previewSub').innerText = `Juega: ${formatearFechaLarga(configRifa.fecha)} • ${configRifa.loteria}`;
+            document.getElementById('previewValor').innerText = `$${formatearMoneda(configRifa.valor)}`;
+            document.getElementById('modalAi').classList.remove('hidden');
+        }
+        function cerrarAiModal() { document.getElementById('modalAi').classList.add('hidden'); }
+
+        async function generarImagenAi() {
+            const query = document.getElementById('aiPromptInput').value.trim().toLowerCase();
+            let selectedUrl = presetsAi.lechon.url;
+            let titleText = `RIFA DE ${configRifa.premio.toUpperCase()}`;
+
+            if(query.includes('efectivo') || query.includes('billete') || query.includes('dinero') || query.includes('millon')) {
+                selectedUrl = presetsAi.efectivo.url;
+                titleText = "GRAN RIFA DE EFECTIVO";
+            } else if(query.includes('dorado') || query.includes('fiesta') || query.includes('navidad') || query.includes('luz')) {
+                selectedUrl = presetsAi.dorado.url;
+                titleText = "RIFA NAVIDEÑA DORADA";
+            } else if(query.includes('lechona') || query.includes('cerdo') || query.includes('comida')) {
+                selectedUrl = presetsAi.lechon.url;
+                titleText = "RIFA DE COJÍN DE LECHONA";
+            } else if(query.length > 2) {
+                selectedUrl = `https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80`;
+                titleText = `RIFA: ${query.toUpperCase()}`;
+            }
+
+            presetSeleccionadoUrl = selectedUrl;
+            document.getElementById('aiPreviewImg').src = selectedUrl;
+            document.getElementById('previewTitulo').innerText = titleText;
+        }
+
+        function seleccionarPlantillaPreset(tipo) {
+            if(presetsAi[tipo]) {
+                presetSeleccionadoUrl = presetsAi[tipo].url;
+                document.getElementById('aiPreviewImg').src = presetSeleccionadoUrl;
+                if(tipo === 'efectivo') configRifa.premio = "Dinero en Efectivo";
+                else if(tipo === 'dorado') configRifa.premio = "Premio Navideño";
+                document.getElementById('previewTitulo').innerText = presetsAi[tipo].title;
+                actualizarInterfazConfig();
+            }
+        }
+
+        function aplicarPlantillaAi() {
+            configRifa.bgUrl = presetSeleccionadoUrl;
+            localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa));
+            cerrarAiModal();
+            alert("¡Plantilla aplicada con éxito!");
+        }
+
+        function abrirWhatsAppModal() {
+            document.getElementById('wpBgImg').src = configRifa.bgUrl;
+            document.getElementById('wpTitulo').innerText = `RIFA DE ${configRifa.premio.toUpperCase()}`;
+            document.getElementById('wpSub').innerText = `Juega: ${formatearFechaLarga(configRifa.fecha)} • ${configRifa.loteria}`;
+            actualizarVistaPreviaWp();
+            document.getElementById('modalWhatsApp').classList.remove('hidden');
+        }
+        function cerrarWhatsAppModal() { document.getElementById('modalWhatsApp').classList.add('hidden'); }
+
+        function actualizarVistaPreviaWp() {
+            const emoji = document.getElementById('inputEmojiCustom').value || '🐷';
+            document.getElementById('wpEmojiLabel').innerText = emoji;
+            const gridMini = document.getElementById('wpGridMini');
+            gridMini.innerHTML = '';
+
+            for(let i=0; i<=99; i++) {
+                const s = i < 10 ? '0' + i : i.toString();
+                const span = document.createElement('span');
+                if(rifaData[s]) {
+                    span.innerText = emoji;
+                    span.className = "text-[11px] text-center font-bold flex items-center justify-center bg-red-100 rounded border border-red-200";
+                } else {
+                    span.innerText = s;
+                    span.className = "text-[8px] text-center font-semibold text-slate-700 flex items-center justify-center";
+                }
+                gridMini.appendChild(span);
+            }
+        }
+
+        function descargarImagenTalonario() {
+            alert("¡Imagen del talonario visual lista para descargar y compartir en tus redes y estados!");
+        }
+
+        function enviarWhatsAppImagen() {
+            const emoji = document.getElementById('inputEmojiCustom').value || '🐷';
+            let ocupadosCount = Object.keys(rifaData).length;
+            let texto = `*${configRifa.premio.toUpperCase()}* 🎁
+` +
+                        `📅 Sorteo: ${formatearFechaLarga(configRifa.fecha)}
+` +
+                        `🎰 Lotería: ${configRifa.loteria}
+` +
+                        `💵 Valor del número: $${formatearMoneda(configRifa.valor)}
+` +
+                        `👤 Responsable: ${configRifa.responsable}
+` +
+                        `💳 Pago: ${configRifa.medioPago} (${configRifa.celPagos})
+
+` +
+                        `¡Apoya apartando tu número! (${ocupadosCount}/100 ocupados)
+` +
+                        `🟢 = Libre | ${emoji} = Ocupado`;
+            
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+        }
+
+        function abrirReportesModal() {
+            const lista = document.getElementById('listaReportes');
+            lista.innerHTML = '';
+            let count = 0;
+
+            for(let i=0; i<=99; i++) {
+                const s = i < 10 ? '0' + i : i.toString();
+                if(rifaData[s]) {
+                    count++;
+                    const d = rifaData[s];
+                    const div = document.createElement('div');
+                    div.className = "bg-slate-800 border border-slate-700 p-3 rounded-2xl flex justify-between items-center text-xs";
+                    div.innerHTML = `
+                        <div>
+                            <span class="bg-red-600 text-white font-bold px-2 py-0.5 rounded-lg text-[10px]">#${s}</span>
+                            <strong class="text-white ml-2">${d.nombre}</strong>
+                            <div class="text-[10px] text-slate-400 mt-0.5">📞 ${d.celular || 'S/N'} • 📍 ${d.direccion || 'S/D'}</div>
                         </div>
+                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold ${d.estado==='pagado'?'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30':'bg-amber-500/20 text-amber-400 border border-emerald-500/30'}">
+                            ${d.estado.toUpperCase()}
+                        </span>
                     `;
+                    lista.appendChild(div);
                 }
             }
 
-            document.getElementById('repPremioTitulo').innerText = `Premio: ${configData.premio}`;
-            document.getElementById('repOcupados').innerText = `${ocupados} / 100`;
-            document.getElementById('repDisponibles').innerText = 100 - ocupados;
-            document.getElementById('repRecaudado').innerText = `$${recaudado.toLocaleString('es-CO')}`;
-            document.getElementById('repDebe').innerText = `$${debe.toLocaleString('es-CO')}`;
-            document.getElementById('repMetaTotal').innerText = `$${(100 * valorBoleto).toLocaleString('es-CO')}`;
-            container.innerHTML = htmlList || '<p class="text-center text-gray-400 text-xs py-4">No hay números apartados.</p>';
-            document.getElementById('modalEstadisticas').classList.remove('hidden');
+            if(count === 0) {
+                lista.innerHTML = `<div class="text-center text-slate-500 py-8">No hay números apartados todavía.</div>`;
+            }
+            document.getElementById('modalReportes').classList.add('hidden');
+            document.getElementById('modalReportes').classList.remove('hidden');
         }
-
-        function cerrarModalEstadisticas() {
-            document.getElementById('modalEstadisticas').classList.add('hidden');
-        }
-
-        function mostrarToast(msj) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msj;
-            toast.classList.remove('translate-y-24', 'opacity-0');
-            setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3000);
-        }
+        function cerrarReportesModal() { document.getElementById('modalReportes').classList.add('hidden'); }
     </script>
 </body>
 </html>
