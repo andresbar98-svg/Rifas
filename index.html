@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rifa - Gestión de 100 Números (00 al 99)</title>
+    <title>Rifa - Gestión de Números (00 al 99)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -112,13 +112,6 @@
                 <button type="button" onclick="abrirModalEstadisticas()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm">
                     <i class="fa-solid fa-chart-pie"></i> Reporte
                 </button>
-                <button type="button" onclick="respaldarDatos()" class="bg-emerald-600/80 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl shadow-lg transition flex items-center gap-1.5 text-xs">
-                    <i class="fa-solid fa-download"></i> Exportar
-                </button>
-                <label class="bg-sky-600/80 hover:bg-sky-500 text-white font-bold px-3 py-2.5 rounded-xl shadow-lg transition flex items-center gap-1.5 cursor-pointer text-xs">
-                    <i class="fa-solid fa-upload"></i> Importar
-                    <input type="file" id="importFile" accept=".json" class="hidden" onchange="importarDatos(event)">
-                </label>
             </div>
         </div>
     </header>
@@ -245,42 +238,51 @@
         </div>
     </div>
 
-    <!-- Modal de Asistente de IA -->
+    <!-- Modal de Asistente de IA Interactivo con Vista Previa y Modificaciones -->
     <div id="modalIA" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-gray-900 border border-purple-500/50 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative text-gray-100">
             <button type="button" onclick="cerrarModalIA()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
-            <div class="flex items-center gap-3 mb-6">
+            <div class="flex items-center gap-3 mb-4">
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-bold text-xl flex items-center justify-center shadow-lg">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
                 <div>
-                    <h3 class="title-font text-2xl font-bold text-purple-300">Asistente IA para tu Rifa</h3>
-                    <p class="text-xs text-gray-300">Describe cómo quieres que se llame tu rifa y la IA configurará el premio</p>
+                    <h3 class="title-font text-xl font-bold text-purple-300">Diseñador IA de Rifa</h3>
+                    <p class="text-xs text-gray-300">Pide modificaciones y elige cuando esté listo</p>
                 </div>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">Escribe tu idea:</label>
-                    <textarea id="promptIA" rows="3" placeholder="Ej. Rifa de lechona navideña especial con cerdito 🐷..." class="w-full p-3 bg-black/60 border border-purple-500/40 rounded-xl text-white text-xs focus:outline-none focus:ring-2 focus:ring-purple-400"></textarea>
+                    <label class="block text-xs font-semibold text-purple-300 uppercase mb-1">Escribe tu idea o modificación:</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="promptIA" placeholder="Ej. Estilo navideño dorado para lechona..." class="w-full p-2.5 bg-black/60 border border-purple-500/40 rounded-xl text-white text-xs focus:outline-none focus:ring-2 focus:ring-purple-400">
+                        <button type="button" onclick="generarTalonarioConIA()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shrink-0 flex items-center gap-1">
+                            <i class="fa-solid fa-arrows-rotate"></i> Generar
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex gap-2">
-                    <button type="button" onclick="usarPromptEjemplo('Cojín de Lechona Navideña')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] px-3 py-1.5 rounded-lg border border-gray-700 transition">🎄 Lechona Navideña</button>
-                    <button type="button" onclick="usarPromptEjemplo('Gran Dinero de Un Millón')" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] px-3 py-1.5 rounded-lg border border-gray-700 transition">💰 Millón en Efectivo</button>
+                <!-- Vista Previa Generada por IA -->
+                <div class="border border-purple-500/40 rounded-2xl p-2 bg-black/60 text-center">
+                    <p class="text-xs text-purple-300 mb-2 font-semibold"><i class="fa-solid fa-eye"></i> Vista Previa del Diseño IA:</p>
+                    <canvas id="canvasIA" width="800" height="1000" class="w-full max-h-56 object-contain mx-auto rounded-lg shadow-md border border-gray-700"></canvas>
                 </div>
 
-                <button type="button" onclick="generarTalonarioConIA()" id="btnGenerarIA" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-sm">
-                    <i class="fa-solid fa-bolt"></i> Aplicar con Inteligencia Artificial
-                </button>
+                <div class="flex items-center justify-between gap-3 pt-2">
+                    <button type="button" onclick="cerrarModalIA()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-2.5 rounded-xl transition text-xs">Cancelar</button>
+                    <button type="button" onclick="aceptarDisenoIA()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-xl transition shadow-lg text-xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Elegir este Diseño
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para Talonario WhatsApp -->
+    <!-- Modal para Talonario WhatsApp con Imagen y Emojis -->
     <div id="modalWhatsApp" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-gray-900 border border-emerald-500/50 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative text-gray-100">
             <button type="button" onclick="cerrarModalWhatsApp()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
@@ -292,8 +294,8 @@
                     <i class="fa-brands fa-whatsapp"></i>
                 </div>
                 <div>
-                    <h3 class="title-font text-2xl font-bold text-emerald-300">Talonario para WhatsApp</h3>
-                    <p class="text-xs text-gray-300">Personaliza el emoji y genera tu mensaje</p>
+                    <h3 class="title-font text-2xl font-bold text-emerald-300">Talonario Visual para WhatsApp</h3>
+                    <p class="text-xs text-gray-300">Elige tu emoji del teclado para tapar los números ocupados</p>
                 </div>
             </div>
 
@@ -301,24 +303,28 @@
                 <div class="bg-emerald-950/40 p-3 rounded-2xl border border-emerald-500/30 flex items-center justify-between gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-emerald-300 uppercase">Emoji para números ocupados</label>
-                        <p class="text-[10px] text-gray-400">Toca el recuadro para abrir el teclado de emojis</p>
+                        <p class="text-[10px] text-gray-400">Toca el recuadro para abrir tu teclado y escoger el emoji (Ej. 🐷, 🐖, ❌)</p>
                     </div>
                     <div>
-                        <input type="text" id="inputEmojiTapa" value="❌" maxlength="4" oninput="actualizarTextoWhatsApp()" class="w-14 h-12 text-center bg-black/60 border border-emerald-500 rounded-xl text-2xl focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer">
+                        <input type="text" id="inputEmojiTapa" value="❌" maxlength="4" oninput="actualizarCanvasWhatsApp()" class="w-14 h-12 text-center bg-black/60 border border-emerald-500 rounded-xl text-2xl focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer">
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-emerald-300 uppercase mb-1">Texto listo para compartir:</label>
-                    <textarea id="textoWhatsApp" rows="9" class="w-full p-3 bg-black/60 border border-emerald-500/40 rounded-xl text-emerald-200 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-emerald-400 select-all"></textarea>
+                <!-- Canvas Oculto para Generar la Imagen -->
+                <canvas id="canvasWhatsApp" width="800" height="1000" class="hidden"></canvas>
+
+                <!-- Vista Previa de la Imagen Generada -->
+                <div class="border border-emerald-500/40 rounded-2xl p-2 bg-black/55 text-center">
+                    <p class="text-xs text-emerald-300 mb-2 font-semibold"><i class="fa-solid fa-eye"></i> Vista previa de la imagen:</p>
+                    <img id="previewImgWhatsApp" class="max-h-60 mx-auto rounded-xl shadow-lg border border-gray-700" alt="Vista previa talonario">
                 </div>
                 
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                    <button type="button" onclick="copiarTextoWhatsApp()" class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 border border-gray-700">
-                        <i class="fa-regular fa-copy"></i> Copiar Mensaje
+                    <button type="button" onclick="descargarImagenTalonario()" class="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 border border-gray-700">
+                        <i class="fa-solid fa-download"></i> Descargar Imagen
                     </button>
-                    <button type="button" onclick="enviarPorWhatsApp()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-lg">
-                        <i class="fa-brands fa-whatsapp text-base"></i> Enviar por WhatsApp
+                    <button type="button" onclick="enviarImagenWhatsApp()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-lg">
+                        <i class="fa-brands fa-whatsapp text-base"></i> Enviar Imagen por WhatsApp
                     </button>
                 </div>
             </div>
@@ -393,12 +399,13 @@
             valor: 5000,
             fecha: "2026-12-26",
             loteria: "Lotería de Boyacá",
-            responsable: "Organizador",
+            responsable: "",
             medioPago: "Nequi / Daviplata",
-            celularPago: "3132264261",
+            celularPago: "",
             emojiTapa: "❌"
         };
         let filtroActual = 'todos';
+        let promptTemporalIA = "";
 
         document.addEventListener('DOMContentLoaded', () => {
             inicializarConfigUI();
@@ -471,87 +478,217 @@
 
             localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
             actualizarEstadisticas();
-            mostrarToast("Configuración guardada");
         }
 
-        // Modales IA
+        // Asistente IA con vista previa y botón de elegir
         function abrirModalIA() {
+            document.getElementById('promptIA').value = configData.premio;
+            renderizarCanvasIA(configData.premio);
             document.getElementById('modalIA').classList.remove('hidden');
         }
         function cerrarModalIA() {
             document.getElementById('modalIA').classList.add('hidden');
         }
-        function usarPromptEjemplo(texto) {
-            document.getElementById('promptIA').value = texto;
-        }
         function generarTalonarioConIA() {
             const prompt = document.getElementById('promptIA').value.trim();
             if (!prompt) {
-                mostrarToast("Escribe una descripción primero");
+                mostrarToast("Escribe una descripción");
                 return;
             }
-            configData.premio = prompt;
-            configData.emojiTapa = "🐷";
-            localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-            inicializarConfigUI();
-            renderizarGrid();
-            actualizarEstadisticas();
-            cerrarModalIA();
-            mostrarToast("¡Configurado exitosamente con IA!");
+            promptTemporalIA = prompt;
+            renderizarCanvasIA(prompt);
+            mostrarToast("Diseño generado con IA. Revisa y haz clic en Elegir.");
         }
 
-        // Modales WhatsApp
+        function renderizarCanvasIA(textoPremio) {
+            const canvas = document.getElementById('canvasIA');
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#064e3b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let grad = ctx.createLinearGradient(0, 0, 0, 220);
+            grad.addColorStop(0, '#7f1d1d');
+            grad.addColorStop(1, '#14532d');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, 220);
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 45px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Rifa de " + textoPremio, canvas.width / 2, 75);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 22px Inter, sans-serif';
+            const valorBoleto = parseInt(configData.valor) || 0;
+            ctx.fillText(`Valor del Número: $${valorBoleto.toLocaleString('es-CO')}`, canvas.width / 2, 130);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.roundRect(40, 240, 720, 720, 20);
+            ctx.fill();
+
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 28px Fredoka, sans-serif';
+            ctx.fillText("Talonario (00 al 99)", canvas.width / 2, 290);
+
+            const startX = 65;
+            const startY = 320;
+            const cellWidth = 67;
+            const cellHeight = 60;
+
+            for (let i = 0; i <= 99; i++) {
+                const col = i % 10;
+                const row = Math.floor(i / 10);
+                const x = startX + col * cellWidth;
+                const y = startY + row * cellHeight;
+                const numStr = i < 10 ? `0${i}` : `${i}`;
+
+                ctx.strokeStyle = '#d1d5db';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, cellWidth, cellHeight);
+
+                ctx.fillStyle = '#ecfdf5';
+                ctx.fillRect(x, y, cellWidth, cellHeight);
+                ctx.fillStyle = '#065f46';
+                ctx.font = 'bold 20px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(numStr, x + cellWidth / 2, y + cellHeight / 2 + 7);
+            }
+        }
+
+        function aceptarDisenoIA() {
+            const prompt = document.getElementById('promptIA').value.trim() || promptTemporalIA;
+            if (prompt) {
+                configData.premio = prompt;
+                localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
+                inicializarConfigUI();
+                renderizarGrid();
+                actualizarEstadisticas();
+                mostrarToast("¡Diseño de IA aplicado con éxito!");
+            }
+            cerrarModalIA();
+        }
+
+        // Talonario WhatsApp con imagen y emoji personalizado
         function abrirModalTalonarioWhatsApp() {
             document.getElementById('inputEmojiTapa').value = configData.emojiTapa || "❌";
-            actualizarTextoWhatsApp();
+            actualizarCanvasWhatsApp();
             document.getElementById('modalWhatsApp').classList.remove('hidden');
         }
         function cerrarModalWhatsApp() {
             document.getElementById('modalWhatsApp').classList.add('hidden');
         }
-        function actualizarTextoWhatsApp() {
+
+        function actualizarCanvasWhatsApp() {
             const emojiTapa = document.getElementById('inputEmojiTapa').value || '❌';
             configData.emojiTapa = emojiTapa;
             localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
 
+            const canvas = document.getElementById('canvasWhatsApp');
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#064e3b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let grad = ctx.createLinearGradient(0, 0, 0, 250);
+            grad.addColorStop(0, '#7f1d1d');
+            grad.addColorStop(1, '#14532d');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, 250);
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 50px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Rifa " + (configData.premio || "Cojín de Lechona"), canvas.width / 2, 85);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 24px Inter, sans-serif';
             const valorBoleto = parseInt(configData.valor) || 0;
-            let mensaje = `🐷 *RIFA: ${configData.premio.toUpperCase()}* 🐷\n\n`;
-            mensaje += `📅 *Juega:* ${configData.fecha || 'Por definir'}\n`;
-            mensaje += `🎰 *Lotería:* ${configData.loteria}\n`;
-            mensaje += `💵 *Valor:* $${valorBoleto.toLocaleString('es-CO')}\n`;
-            if (configData.responsable) mensaje += `👤 *Responsable:* ${configData.responsable}\n`;
-            if (configData.medioPago && configData.celularPago) {
-                mensaje += `💳 *Pagos:* ${configData.medioPago} al *${configData.celularPago}*\n`;
+            ctx.fillText(`Juega: ${configData.fecha || 'Por definir'} | Lotería: ${configData.loteria}`, canvas.width / 2, 135);
+            ctx.fillText(`Valor del Número: $${valorBoleto.toLocaleString('es-CO')}`, canvas.width / 2, 175);
+            if(configData.responsable || configData.medioPago) {
+                ctx.fillStyle = '#fbbf24';
+                ctx.font = '20px Inter, sans-serif';
+                ctx.fillText(`Pagos: ${configData.medioPago || 'Efectivo'} al ${configData.celularPago || ''} (${configData.responsable || ''})`, canvas.width / 2, 215);
             }
-            mensaje += `\n📋 *TALONARIO (00 al 99):*\n`;
 
-            let filaTexto = "";
+            ctx.fillStyle = '#ffffff';
+            ctx.roundRect(50, 260, 700, 680, 20);
+            ctx.fill();
+
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 32px Fredoka, sans-serif';
+            ctx.fillText("TALONARIO (00 al 99)", canvas.width / 2, 315);
+
+            const startX = 85;
+            const startY = 350;
+            const cellWidth = 63;
+            const cellHeight = 52;
+
             for (let i = 0; i <= 99; i++) {
-                const numStr = i < 10 ? `0${i}` : `${i}`;
-                if (rifaData[i]) {
-                    filaTexto += `${emojiTapa}${numStr} `;
-                } else {
-                    filaTexto += `🟢${numStr} `;
-                }
+                const col = i % 10;
+                const row = Math.floor(i / 10);
+                const x = startX + col * cellWidth;
+                const y = startY + row * cellHeight;
 
-                if ((i + 1) % 10 === 0) {
-                    mensaje += filaTexto + "\n";
-                    filaTexto = "";
+                const numStr = i < 10 ? `0${i}` : `${i}`;
+                const ocupado = rifaData[i] !== undefined;
+
+                ctx.strokeStyle = '#d1d5db';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, cellWidth, cellHeight);
+
+                if (ocupado) {
+                    ctx.fillStyle = '#fee2e2';
+                    ctx.fillRect(x, y, cellWidth, cellHeight);
+                    ctx.fillStyle = '#991b1b';
+                    ctx.font = 'bold 22px Inter, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(emojiTapa, x + cellWidth / 2, y + cellHeight / 2 + 8);
+                } else {
+                    ctx.fillStyle = '#ecfdf5';
+                    ctx.fillRect(x, y, cellWidth, cellHeight);
+                    ctx.fillStyle = '#065f46';
+                    ctx.font = 'bold 20px Inter, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(numStr, x + cellWidth / 2, y + cellHeight / 2 + 7);
                 }
             }
-            mensaje += `\n🟢 = Libre | ${emojiTapa} = Ocupado\n¡Aparta tu número ya!`;
-            document.getElementById('textoWhatsApp').value = mensaje;
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 22px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("🟢 = Libre  |  " + emojiTapa + " = Ocupado. ¡Aparta tu número ya!", canvas.width / 2, 960);
+
+            document.getElementById('previewImgWhatsApp').src = canvas.toDataURL('image/png');
         }
-        function copiarTextoWhatsApp() {
-            const textarea = document.getElementById('textoWhatsApp');
-            textarea.select();
-            document.execCommand('copy');
-            mostrarToast("¡Copiado al portapapeles!");
+
+        function descargarImagenTalonario() {
+            const canvas = document.getElementById('canvasWhatsApp');
+            const link = document.createElement('a');
+            link.download = `talonario_rifa_${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            mostrarToast("Imagen descargada con éxito");
         }
-        function enviarPorWhatsApp() {
-            const texto = document.getElementById('textoWhatsApp').value;
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-            window.open(url, '_blank');
+
+        function enviarImagenWhatsApp() {
+            const canvas = document.getElementById('canvasWhatsApp');
+            canvas.toBlob(blob => {
+                const file = new File([blob], "talonario_rifa.png", { type: "image/png" });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: 'Talonario Rifa',
+                        text: `¡Aparta tu número para la rifa de ${configData.premio}!`
+                    }).catch(() => {});
+                } else {
+                    descargarImagenTalonario();
+                    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(`¡Hola! Te comparto el talonario de la rifa de ${configData.premio}. ¡Apoya comprando tu número!`)}`;
+                    window.open(url, '_blank');
+                    mostrarToast("Imagen descargada. Adjúntala en WhatsApp.");
+                }
+            }, 'image/png');
         }
 
         // Grilla 00 al 99
@@ -736,45 +873,6 @@
 
         function cerrarModalEstadisticas() {
             document.getElementById('modalEstadisticas').classList.add('hidden');
-        }
-
-        function respaldarDatos() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ config: configData, data: rifaData }, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `rifa_respaldo.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            mostrarToast("Exportado con éxito");
-        }
-
-        function importarDatos(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (parsed.data) {
-                        rifaData = parsed.data;
-                        if (parsed.config) {
-                            configData = parsed.config;
-                            localStorage.setItem('rifa_lechona_config', JSON.stringify(configData));
-                            inicializarConfigUI();
-                        }
-                    } else {
-                        rifaData = parsed;
-                    }
-                    localStorage.setItem('rifa_lechona_data', JSON.stringify(rifaData));
-                    renderizarGrid();
-                    actualizarEstadisticas();
-                    mostrarToast("Importado con éxito");
-                } catch (err) {
-                    mostrarToast("Error al importar JSON");
-                }
-            };
-            reader.readAsText(file);
         }
 
         function mostrarToast(msj) {
