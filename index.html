@@ -27,7 +27,8 @@
                         Control de Rifa 
                         <span id="badgePremio" class="text-xs bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-0.5 rounded-full font-semibold">Cojín de Lechona</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Sistema automático 00 al 99 con Talonario Visual <span id="estadoNube" class="ml-1 text-slate-500">☁️ Conectando…</span></p>
+                    <p class="text-xs text-slate-400">Sistema automático 00 al 99 con Talonario Visual</p>
+                    <div class="mt-1.5"><span id="estadoNube" class="inline-flex items-center gap-1.5 text-[11px] font-semibold bg-slate-900/70 border border-slate-700 rounded-full px-2.5 py-1 text-slate-300"><span id="dotNube" class="w-2.5 h-2.5 rounded-full inline-block" style="background:#64748b"></span><span id="txtNube">Conectando…</span></span></div>
                 </div>
             </div>
 
@@ -143,8 +144,8 @@
 
         <!-- Grid 00-99 -->
         <section class="lg:col-span-3 space-y-4">
-            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-5 shadow-xl backdrop-blur">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5 pb-3 border-b border-slate-700">
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-2.5 sm:p-5 shadow-xl backdrop-blur">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-slate-700">
                     <div>
                         <h2 class="text-base font-bold text-white">Talonario de 00 al 99</h2>
                         <p class="text-xs text-slate-400">Haz clic en un número libre para apartarlo o en uno ocupado para editar.</p>
@@ -157,7 +158,7 @@
                 </div>
 
                 <!-- 10x10 Grid for 00 to 99 -->
-                <div id="gridNumeros" class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                <div id="gridNumeros" class="grid grid-cols-10 gap-1 sm:gap-2">
                     <!-- JS generated -->
                 </div>
             </div>
@@ -547,13 +548,57 @@
         }
 
         // ===================== FIREBASE (sincronización en la nube) =====================
+        const nubeSt = { online: navigator.onLine, conectado: false, error: false, pendFlag: false, pendCount: 0 };
+        const colaNube = [];
+
+        function pintarTestigo() {
+            const dot = document.getElementById('dotNube'), txt = document.getElementById('txtNube');
+            if (!dot || !txt) return;
+            const n = nubeSt.pendCount;
+            const porSubir = n > 0 ? (n === 1 ? '1 cambio por subir' : n + ' cambios por subir') : 'cambios por subir';
+            let color = '#64748b', texto = 'Conectando…', pulso = true;
+            if (!nubeSt.online) {
+                color = '#f59e0b'; pulso = false;
+                texto = (n > 0 || nubeSt.pendFlag) ? 'Sin señal · ' + porSubir : 'Sin señal · se guarda en el teléfono';
+            } else if (nubeSt.error) {
+                color = '#f43f5e'; pulso = false; texto = 'Error con la nube (revisa las reglas)';
+            } else if (n > 0 || nubeSt.pendFlag) {
+                color = '#0ea5e9'; texto = 'Subiendo cambios…';
+            } else if (nubeSt.conectado) {
+                color = '#10b981'; pulso = false; texto = 'En línea · Sincronizado';
+            }
+            dot.style.background = color;
+            dot.classList.toggle('animate-pulse', pulso);
+            txt.textContent = texto;
+        }
+
+        function marcarNube(estado) {
+            if (estado === 'ok') { nubeSt.conectado = true; nubeSt.error = false; }
+            else if (estado === 'error') { nubeSt.error = true; }
+            else { nubeSt.conectado = false; }
+            pintarTestigo();
+        }
+        function setPendiente(b) { nubeSt.pendFlag = !!b; pintarTestigo(); }
+
+        window.addEventListener('online', () => { nubeSt.online = true; pintarTestigo(); });
+        window.addEventListener('offline', () => { nubeSt.online = false; pintarTestigo(); });
+        document.addEventListener('DOMContentLoaded', pintarTestigo);
+
+        function finNube() { nubeSt.pendCount = Math.max(0, nubeSt.pendCount - 1); pintarTestigo(); }
+
+        function ejecutarNube(fn, args) {
+            const api = window.fbRifa;
+            if (!api || !api[fn]) { colaNube.push([fn, args]); return; }
+            Promise.resolve().then(() => api[fn](...args)).then(finNube).catch(e => { console.error('Firebase', e); finNube(); marcarNube('error'); });
+        }
+        // Registra un cambio en la nube. Sin señal queda en cola local y sube solo cuando vuelve la conexión.
         function nube(fn, ...args) {
-            try {
-                const api = window.fbRifa;
-                if (!api || !api[fn]) return;
-                const r = api[fn](...args);
-                if (r && r.catch) r.catch(e => { console.error('Firebase', e); marcarNube('error'); });
-            } catch (e) { console.error('Firebase', e); }
+            nubeSt.pendCount++;
+            pintarTestigo();
+            ejecutarNube(fn, args);
+        }
+        function vaciarColaNube() {
+            while (colaNube.length) { const [fn, a] = colaNube.shift(); ejecutarNube(fn, a); }
         }
 
         function configSinFondo() {
@@ -562,20 +607,14 @@
             return JSON.parse(JSON.stringify(c));
         }
 
-        function marcarNube(estado) {
-            const el = document.getElementById('estadoNube');
-            if (!el) return;
-            if (estado === 'ok') { el.textContent = '☁️ Sincronizado'; el.className = 'ml-1 text-emerald-400 font-semibold'; }
-            else if (estado === 'error') { el.textContent = '⚠️ Sin conexión a la nube'; el.className = 'ml-1 text-amber-400 font-semibold'; }
-            else { el.textContent = '☁️ Conectando…'; el.className = 'ml-1 text-slate-500'; }
-        }
-
         function guardarCacheLocal() {
             try { localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa)); } catch (e) {}
         }
 
         function aplicarDatosRemotos(d) {
-            rifaData = d || {};
+            d = d || {};
+            if (JSON.stringify(d) === JSON.stringify(rifaData)) return;
+            rifaData = d;
             try { localStorage.setItem('rifa_datos_00_99', JSON.stringify(rifaData)); } catch (e) {}
             renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
             actualizarEstadisticas();
@@ -583,8 +622,10 @@
         }
 
         function aplicarConfigRemota(c) {
+            const antes = JSON.stringify(configSinFondo());
             const bg = configRifa.bgUrl;
             Object.assign(configRifa, c || {});
+            if (JSON.stringify(configSinFondo()) === antes) return;
             configRifa.bgUrl = bg;
             guardarCacheLocal();
             actualizarInterfazConfig();
@@ -672,14 +713,20 @@
                     clasesColor = "bg-amber-500 text-slate-950 border-amber-400 font-bold shadow-md shadow-amber-500/20";
                 }
 
-                btn.className = `aspect-square rounded-2xl border flex flex-col items-center justify-between p-1.5 cursor-pointer transition-all duration-150 relative group ${clasesColor}`;
+                btn.className = `aspect-square rounded-md sm:rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all duration-150 select-none overflow-hidden ${clasesColor}`;
                 btn.onclick = () => abrirModalNumero(strNum);
+                if (nombre) btn.title = nombre;
 
-                btn.innerHTML = `
-                    <span class="text-[9px] opacity-75 font-semibold">#${strNum}</span>
-                    <span class="text-base font-black">${strNum}</span>
-                    <span class="w-full text-[8px] truncate text-center px-0.5 rounded ${datos ? 'bg-black/25 text-white' : 'opacity-60'}">${nombre ? nombre : 'Libre'}</span>
-                `;
+                const num = document.createElement('span');
+                num.className = 'text-[11px] sm:text-base font-black leading-none';
+                num.textContent = strNum;
+                btn.appendChild(num);
+                if (nombre) {
+                    const nom = document.createElement('span');
+                    nom.className = 'hidden sm:block w-full text-[8px] truncate text-center px-0.5 mt-0.5 opacity-90';
+                    nom.textContent = nombre;
+                    btn.appendChild(nom);
+                }
                 grid.appendChild(btn);
             }
         }
@@ -1246,6 +1293,13 @@
             document.getElementById('modalReportes').classList.remove('hidden');
         }
         function cerrarReportesModal() { document.getElementById('modalReportes').classList.add('hidden'); }
+
+        // Permite abrir la app sin señal (guarda la página y sus librerías en el teléfono)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(e => console.warn('Service worker', e));
+            });
+        }
     </script>
 
     <!-- Firebase (Firestore + Analytics) -->
@@ -1279,25 +1333,32 @@
 
         window.fbRifa = {
             guardarNumero: (n, o) => setDoc(refDatos, { datos: { [n]: o } }, { merge: true }),
-            liberarNumero: (n) => updateDoc(refDatos, { ['datos.' + n]: deleteField() }),
+            liberarNumero: (n) => setDoc(refDatos, { datos: { [n]: deleteField() } }, { merge: true }),
             reiniciar:     () => setDoc(refDatos, { datos: {} }),
             guardarConfig: (c) => setDoc(refConfig, { config: c }),
             guardarFondo:  (u) => setDoc(refFondo, { url: u })
         };
 
         const fallo = (e) => { console.error('Firebase', e); marcarNube('error'); };
+        const pend = { datos: false, config: false, fondo: false };
+        const opts = { includeMetadataChanges: true };
+        const marcarPend = (k, snap) => { pend[k] = snap.metadata.hasPendingWrites; setPendiente(pend.datos || pend.config || pend.fondo); };
 
-        onSnapshot(refDatos, (snap) => {
-            if (snap.metadata.hasPendingWrites) return;
+        onSnapshot(refDatos, opts, (snap) => {
+            marcarPend('datos', snap);
             if (!snap.exists()) {
-                if (!snap.metadata.fromCache) setDoc(refDatos, { datos: rifaData || {} }).catch(fallo);
+                if (!snap.metadata.fromCache) {
+                    marcarNube('ok');
+                    if (!snap.metadata.hasPendingWrites) setDoc(refDatos, { datos: rifaData || {} }).catch(fallo);
+                }
                 return;
             }
             aplicarDatosRemotos(snap.data().datos || {});
             marcarNube(snap.metadata.fromCache ? 'conectando' : 'ok');
         }, fallo);
 
-        onSnapshot(refConfig, (snap) => {
+        onSnapshot(refConfig, opts, (snap) => {
+            marcarPend('config', snap);
             if (snap.metadata.hasPendingWrites) return;
             if (!snap.exists()) {
                 if (!snap.metadata.fromCache) setDoc(refConfig, { config: configSinFondo() }).catch(fallo);
@@ -1306,7 +1367,8 @@
             aplicarConfigRemota(snap.data().config || {});
         }, fallo);
 
-        onSnapshot(refFondo, (snap) => {
+        onSnapshot(refFondo, opts, (snap) => {
+            marcarPend('fondo', snap);
             if (snap.metadata.hasPendingWrites) return;
             if (!snap.exists()) {
                 if (!snap.metadata.fromCache && configRifa.bgUrl && configRifa.bgUrl.length < 900000) setDoc(refFondo, { url: configRifa.bgUrl }).catch(fallo);
@@ -1314,6 +1376,8 @@
             }
             aplicarFondoRemoto(snap.data().url);
         }, fallo);
+
+        vaciarColaNube();
     </script>
 </body>
 </html>
