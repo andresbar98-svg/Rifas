@@ -332,7 +332,7 @@
                 <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-3 space-y-2">
                     <span class="block font-bold text-slate-300 text-center">Vista Previa de la Plantilla Profesional:</span>
                     <div class="relative rounded-xl overflow-hidden aspect-[3/4] bg-slate-950 flex items-center justify-center border border-slate-700">
-                        <img id="aiPreviewImg" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-85" alt="Plantilla IA">
+                        <img id="aiPreviewImg" crossorigin="anonymous" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-85" alt="Plantilla IA">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/60 flex flex-col justify-between p-4 text-center">
                             <div>
                                 <h4 id="previewTitulo" class="font-title text-xl text-red-500 drop-shadow-md">RIFA DE COJÍN DE LECHONA</h4>
@@ -384,7 +384,7 @@
                 <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-3 space-y-2 text-center">
                     <span class="block font-bold text-slate-300 text-[11px]">Vista previa de la imagen para WhatsApp:</span>
                     <div id="whatsappCanvasContainer" class="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-950 flex flex-col justify-between p-4 shadow-xl border border-slate-700 mx-auto max-w-[320px]">
-                        <img id="wpBgImg" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Fondo">
+                        <img id="wpBgImg" crossorigin="anonymous" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Fondo">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/70 flex flex-col justify-between p-3.5 text-center">
                             <div>
                                 <h4 id="wpTitulo" class="font-title text-lg text-red-500 drop-shadow">RIFA DE COJÍN DE LECHONA</h4>
@@ -917,28 +917,61 @@
             alert("¡Imagen del talonario visual lista para descargar y compartir en tus redes y estados!");
         }
 
-        function enviarWhatsAppImagen() {
+        async function enviarWhatsAppImagen() {
+            const container = document.getElementById('whatsappCanvasContainer');
             const emoji = document.getElementById('inputEmojiCustom').value || '🐷';
             let ocupadosCount = Object.keys(rifaData).length;
-            let texto = `*${configRifa.premio.toUpperCase()}* 🎁
-` +
-                        `📅 Sorteo: ${formatearFechaLarga(configRifa.fecha)}
-` +
-                        `🎰 Lotería: ${configRifa.loteria}
-` +
-                        `💵 Valor del número: $${formatearMoneda(configRifa.valor)}
-` +
-                        `👤 Responsable: ${configRifa.responsable}
-` +
-                        `💳 Pago: ${configRifa.medioPago} (${configRifa.celPagos})
-
-` +
-                        `¡Apoya apartando tu número! (${ocupadosCount}/100 ocupados)
-` +
+            let texto = `*${configRifa.premio.toUpperCase()}* 🎁\n` +
+                        `📅 Sorteo: ${formatearFechaLarga(configRifa.fecha)}\n` +
+                        `🎰 Lotería: ${configRifa.loteria}\n` +
+                        `💵 Valor del número: $${formatearMoneda(configRifa.valor)}\n` +
+                        `👤 Responsable: ${configRifa.responsable}\n` +
+                        `💳 Pago: ${configRifa.medioPago} (${configRifa.celPagos})\n\n` +
+                        `¡Apoya apartando tu número! (${ocupadosCount}/100 ocupados)\n` +
                         `🟢 = Libre | ${emoji} = Ocupado`;
-            
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-            window.open(url, '_blank');
+
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Preparando...';
+
+            try {
+                const canvas = await html2canvas(container, { scale: 2, useCORS: true, allowTaint: false, logging: false });
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], 'talonario-rifa.png', { type: 'image/png' });
+                    
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Talonario de Rifa',
+                                text: texto
+                            });
+                            btn.innerHTML = originalText;
+                            return;
+                        } catch (err) {
+                            console.log('Share canceled or failed', err);
+                        }
+                    }
+                    
+                    // Fallback: descargar imagen y abrir WhatsApp con texto
+                    const link = document.createElement('a');
+                    link.download = 'talonario-rifa.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+
+                    setTimeout(() => {
+                        const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+                        window.open(url, '_blank');
+                    }, 500);
+
+                    btn.innerHTML = originalText;
+                }, 'image/png');
+            } catch (err) {
+                console.error(err);
+                btn.innerHTML = originalText;
+                const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+                window.open(url, '_blank');
+            }
         }
 
         function abrirReportesModal() {
