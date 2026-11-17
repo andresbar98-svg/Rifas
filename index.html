@@ -27,7 +27,7 @@
                         Control de Rifa 
                         <span id="badgePremio" class="text-xs bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-0.5 rounded-full font-semibold">Cojín de Lechona</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Sistema automático 00 al 99 con Talonario Visual</p>
+                    <p class="text-xs text-slate-400">Sistema automático 00 al 99 con Talonario Visual <span id="estadoNube" class="ml-1 text-slate-500">☁️ Conectando…</span></p>
                 </div>
             </div>
 
@@ -546,12 +546,89 @@
             }
         }
 
+        // ===================== FIREBASE (sincronización en la nube) =====================
+        function nube(fn, ...args) {
+            try {
+                const api = window.fbRifa;
+                if (!api || !api[fn]) return;
+                const r = api[fn](...args);
+                if (r && r.catch) r.catch(e => { console.error('Firebase', e); marcarNube('error'); });
+            } catch (e) { console.error('Firebase', e); }
+        }
+
+        function configSinFondo() {
+            const c = Object.assign({}, configRifa);
+            delete c.bgUrl;
+            return JSON.parse(JSON.stringify(c));
+        }
+
+        function marcarNube(estado) {
+            const el = document.getElementById('estadoNube');
+            if (!el) return;
+            if (estado === 'ok') { el.textContent = '☁️ Sincronizado'; el.className = 'ml-1 text-emerald-400 font-semibold'; }
+            else if (estado === 'error') { el.textContent = '⚠️ Sin conexión a la nube'; el.className = 'ml-1 text-amber-400 font-semibold'; }
+            else { el.textContent = '☁️ Conectando…'; el.className = 'ml-1 text-slate-500'; }
+        }
+
+        function guardarCacheLocal() {
+            try { localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa)); } catch (e) {}
+        }
+
+        function aplicarDatosRemotos(d) {
+            rifaData = d || {};
+            try { localStorage.setItem('rifa_datos_00_99', JSON.stringify(rifaData)); } catch (e) {}
+            renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
+            actualizarEstadisticas();
+            if (!document.getElementById('modalWhatsApp').classList.contains('hidden')) actualizarVistaPreviaWp();
+        }
+
+        function aplicarConfigRemota(c) {
+            const bg = configRifa.bgUrl;
+            Object.assign(configRifa, c || {});
+            configRifa.bgUrl = bg;
+            guardarCacheLocal();
+            actualizarInterfazConfig();
+        }
+
+        function aplicarFondoRemoto(url) {
+            if (!url || url === configRifa.bgUrl) return;
+            configRifa.bgUrl = url;
+            guardarCacheLocal();
+            actualizarInterfazConfig();
+        }
+
+        // Reduce la imagen para que quepa en Firestore (máx. ~1 MB por documento)
+        function comprimirImagen(dataUrl, maxW) {
+            return new Promise(resolve => {
+                const im = new Image();
+                im.onload = () => {
+                    let esc = Math.min(1, maxW / im.naturalWidth);
+                    let out = dataUrl;
+                    for (let intento = 0; intento < 6; intento++) {
+                        const c = document.createElement('canvas');
+                        c.width = Math.round(im.naturalWidth * esc);
+                        c.height = Math.round(im.naturalHeight * esc);
+                        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+                        let q = 0.88;
+                        out = c.toDataURL('image/jpeg', q);
+                        while (out.length > 850000 && q > 0.5) { q -= 0.08; out = c.toDataURL('image/jpeg', q); }
+                        if (out.length <= 850000) break;
+                        esc *= 0.8;
+                    }
+                    resolve(out);
+                };
+                im.onerror = () => resolve(dataUrl);
+                im.src = dataUrl;
+            });
+        }
+
         function subirTalonarioImagen(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    configRifa.bgUrl = e.target.result;
+                reader.onload = async function(e) {
+                    configRifa.bgUrl = await comprimirImagen(e.target.result, 1600);
+                    nube('guardarFondo', configRifa.bgUrl);
                     try { localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa)); } catch (err) { console.warn('Imagen muy pesada para guardar', err); }
                     document.getElementById('wpBgImg').src = configRifa.bgUrl;
                     document.getElementById('aiPreviewImg').src = configRifa.bgUrl;
@@ -643,6 +720,7 @@
                 estado: document.getElementById('selectEstado').value
             };
             localStorage.setItem('rifa_datos_00_99', JSON.stringify(rifaData));
+            nube('guardarNumero', num, rifaData[num]);
             cerrarModal();
             renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
             actualizarEstadisticas();
@@ -653,6 +731,7 @@
             if (confirm(`¿Liberar número #${num}?`)) {
                 delete rifaData[num];
                 localStorage.setItem('rifa_datos_00_99', JSON.stringify(rifaData));
+                nube('liberarNumero', num);
                 cerrarModal();
                 renderizarGrid(filtroActual, document.getElementById('inputBuscar').value);
                 actualizarEstadisticas();
@@ -827,6 +906,7 @@
             configRifa.celPagos = document.getElementById('cfgCelPagos').value;
 
             localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa));
+            nube('guardarConfig', configSinFondo());
             actualizarInterfazConfig();
             actualizarEstadisticas();
             cerrarConfiguracion();
@@ -836,6 +916,7 @@
             if (confirm("¿Borrar todos los registros y reiniciar la rifa 00-99?")) {
                 rifaData = {};
                 localStorage.removeItem('rifa_datos_00_99');
+                nube('reiniciar');
                 renderizarGrid();
                 actualizarEstadisticas();
             }
@@ -889,6 +970,8 @@
         function aplicarPlantillaAi() {
             configRifa.bgUrl = presetSeleccionadoUrl;
             localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa));
+            nube('guardarFondo', configRifa.bgUrl);
+            nube('guardarConfig', configSinFondo());
             cerrarAiModal();
             alert("¡Plantilla aplicada con éxito!");
         }
@@ -905,6 +988,7 @@
             clearTimeout(_tGuardarCfg);
             _tGuardarCfg = setTimeout(() => {
                 try { localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa)); } catch (e) { console.warn('No se pudo guardar', e); }
+                nube('guardarConfig', configSinFondo());
             }, 400);
         }
 
@@ -1060,10 +1144,13 @@
         }
 
         function actualizarVistaPreviaWp() {
-            const emoji = (document.getElementById('inputEmojiCustom').value || '').trim();
-            if (emoji) configRifa.emoji = emoji;
-            configRifa.emojiTam = document.getElementById('rngEmojiTam').value;
-            guardarConfigDebounce();
+            const abierto = !document.getElementById('modalWhatsApp').classList.contains('hidden');
+            if (abierto) {
+                const emoji = (document.getElementById('inputEmojiCustom').value || '').trim();
+                if (emoji) configRifa.emoji = emoji;
+                configRifa.emojiTam = document.getElementById('rngEmojiTam').value;
+                guardarConfigDebounce();
+            }
             dibujarTalonario(document.getElementById('wpCanvas'), 900, document.getElementById('chkGuia').checked);
         }
 
@@ -1159,6 +1246,74 @@
             document.getElementById('modalReportes').classList.remove('hidden');
         }
         function cerrarReportesModal() { document.getElementById('modalReportes').classList.add('hidden'); }
+    </script>
+
+    <!-- Firebase (Firestore + Analytics) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
+        import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+                 doc, setDoc, updateDoc, deleteField, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQTwOyl8sm4NG_F1DaW1A9I11Q_MyLpVo",
+            authDomain: "rifa-4edcd.firebaseapp.com",
+            projectId: "rifa-4edcd",
+            storageBucket: "rifa-4edcd.firebasestorage.app",
+            messagingSenderId: "595470405515",
+            appId: "1:595470405515:web:8576d7edfca4a742a2698e",
+            measurementId: "G-SCJBE4WQM0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        try { getAnalytics(app); } catch (e) { console.warn('Analytics no disponible', e); }
+
+        let db;
+        try {
+            db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
+        } catch (e) { db = getFirestore(app); }
+
+        const refDatos  = doc(db, 'rifa', 'datos');
+        const refConfig = doc(db, 'rifa', 'config');
+        const refFondo  = doc(db, 'rifa', 'fondo');
+
+        window.fbRifa = {
+            guardarNumero: (n, o) => setDoc(refDatos, { datos: { [n]: o } }, { merge: true }),
+            liberarNumero: (n) => updateDoc(refDatos, { ['datos.' + n]: deleteField() }),
+            reiniciar:     () => setDoc(refDatos, { datos: {} }),
+            guardarConfig: (c) => setDoc(refConfig, { config: c }),
+            guardarFondo:  (u) => setDoc(refFondo, { url: u })
+        };
+
+        const fallo = (e) => { console.error('Firebase', e); marcarNube('error'); };
+
+        onSnapshot(refDatos, (snap) => {
+            if (snap.metadata.hasPendingWrites) return;
+            if (!snap.exists()) {
+                if (!snap.metadata.fromCache) setDoc(refDatos, { datos: rifaData || {} }).catch(fallo);
+                return;
+            }
+            aplicarDatosRemotos(snap.data().datos || {});
+            marcarNube(snap.metadata.fromCache ? 'conectando' : 'ok');
+        }, fallo);
+
+        onSnapshot(refConfig, (snap) => {
+            if (snap.metadata.hasPendingWrites) return;
+            if (!snap.exists()) {
+                if (!snap.metadata.fromCache) setDoc(refConfig, { config: configSinFondo() }).catch(fallo);
+                return;
+            }
+            aplicarConfigRemota(snap.data().config || {});
+        }, fallo);
+
+        onSnapshot(refFondo, (snap) => {
+            if (snap.metadata.hasPendingWrites) return;
+            if (!snap.exists()) {
+                if (!snap.metadata.fromCache && configRifa.bgUrl && configRifa.bgUrl.length < 900000) setDoc(refFondo, { url: configRifa.bgUrl }).catch(fallo);
+                return;
+            }
+            aplicarFondoRemoto(snap.data().url);
+        }, fallo);
     </script>
 </body>
 </html>
