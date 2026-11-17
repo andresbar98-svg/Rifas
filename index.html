@@ -375,39 +375,48 @@
                     <label class="block font-bold text-slate-300 uppercase text-[11px]">Emoji para números ocupados:</label>
                     <div class="flex items-center gap-3">
                         <input type="text" id="inputEmojiCustom" value="🐷" maxlength="4" oninput="actualizarVistaPreviaWp()" class="w-16 h-14 bg-slate-900 border border-slate-700 rounded-2xl text-center text-2xl focus:outline-none focus:border-emerald-500 font-bold shadow-inner">
-                        <div class="text-[11px] text-slate-400">
-                            Toca la casilla y escribe cualquier emoji desde tu teclado (Ej. 🐷, 🐖, ❌, ⭐, 🔥, 💰).
-                        </div>
+                        <div class="text-[11px] text-slate-400">Elige uno de abajo o toca la casilla y escribe cualquier emoji desde tu teclado.</div>
                     </div>
+                    <div id="emojiRapidos" class="flex flex-wrap gap-1.5"></div>
+                    <label class="flex items-center gap-3 pt-1">
+                        <span class="text-slate-300 w-20 shrink-0">Tamaño</span>
+                        <input type="range" id="rngEmojiTam" min="50" max="100" step="1" value="80" oninput="actualizarVistaPreviaWp()" class="flex-1 accent-emerald-500">
+                    </label>
+                    <label class="flex items-center gap-2 text-slate-300">
+                        <input type="checkbox" id="chkLeyenda" checked onchange="actualizarVistaPreviaWp()" class="accent-emerald-500">
+                        Agregar franja de leyenda abajo (Libre / Ocupado)
+                    </label>
                 </div>
+
+                <details id="detGrid" class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4">
+                    <summary class="font-bold text-slate-300 uppercase text-[11px] cursor-pointer">Ajustar cuadrícula a mi talonario</summary>
+                    <div class="mt-3 space-y-2.5">
+                        <p class="text-[11px] text-slate-400">Mueve los controles hasta que el marco verde quede justo sobre los números 00–99 de tu imagen. Se guarda solo.</p>
+                        <label class="flex items-center gap-3"><span class="w-20 shrink-0 text-slate-300">Izquierda</span><input type="range" id="gridX" min="0" max="50" step="0.1" oninput="cambiarGrid()" class="flex-1 accent-emerald-500"></label>
+                        <label class="flex items-center gap-3"><span class="w-20 shrink-0 text-slate-300">Arriba</span><input type="range" id="gridY" min="0" max="95" step="0.1" oninput="cambiarGrid()" class="flex-1 accent-emerald-500"></label>
+                        <label class="flex items-center gap-3"><span class="w-20 shrink-0 text-slate-300">Ancho</span><input type="range" id="gridW" min="30" max="100" step="0.1" oninput="cambiarGrid()" class="flex-1 accent-emerald-500"></label>
+                        <label class="flex items-center gap-3"><span class="w-20 shrink-0 text-slate-300">Alto</span><input type="range" id="gridH" min="5" max="70" step="0.1" oninput="cambiarGrid()" class="flex-1 accent-emerald-500"></label>
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="flex items-center gap-2 text-slate-300">
+                                <input type="checkbox" id="chkGuia" checked onchange="actualizarVistaPreviaWp()" class="accent-emerald-500"> Mostrar guía
+                            </label>
+                            <button onclick="resetGrid()" class="text-[11px] text-slate-400 underline">Restablecer</button>
+                        </div>
+                        <p class="text-[10px] text-slate-500">La guía verde solo se ve aquí, no sale en la imagen final.</p>
+                    </div>
+                </details>
 
                 <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-3 space-y-2 text-center">
                     <span class="block font-bold text-slate-300 text-[11px]">Vista previa de la imagen para WhatsApp:</span>
-                    <div id="whatsappCanvasContainer" class="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-950 flex flex-col justify-between p-4 shadow-xl border border-slate-700 mx-auto max-w-[320px]">
-                        <img id="wpBgImg" crossorigin="anonymous" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Fondo">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/70 flex flex-col justify-between p-3.5 text-center">
-                            <div>
-                                <h4 id="wpTitulo" class="font-title text-lg text-red-500 drop-shadow">RIFA DE COJÍN DE LECHONA</h4>
-                                <p id="wpSub" class="text-[10px] text-amber-300 font-bold">Juega: Sábado, 26 de Diciembre de 2026 • Lotería de Boyacá</p>
-                            </div>
-                            <div class="bg-white/95 text-slate-950 p-2.5 rounded-xl shadow-xl space-y-1 border border-slate-300 my-auto">
-                                <p class="text-[10px] font-black uppercase text-slate-800">TALONARIO (00 al 99)</p>
-                                <div id="wpGridMini" class="grid grid-cols-10 gap-0.5 text-[8px] font-bold bg-slate-100 p-1 rounded text-slate-700">
-                                    <!-- Rendered dynamically -->
-                                </div>
-                            </div>
-                            <div class="bg-emerald-950/90 border border-emerald-500/50 py-1.5 px-3 rounded-xl text-emerald-200 text-[10px] font-bold">
-                                🟢 = Libre | <span id="wpEmojiLabel">🐷</span> = Ocupado | ¡Aparta tu número!
-                            </div>
-                        </div>
-                    </div>
+                    <img id="wpBgImg" crossorigin="anonymous" src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?auto=format&fit=crop&w=800&q=80" onload="actualizarVistaPreviaWp()" class="hidden" alt="Fondo">
+                    <canvas id="wpCanvas" class="w-full h-auto rounded-2xl border border-slate-700 shadow-xl mx-auto bg-slate-950"></canvas>
                 </div>
             </div>
             <div class="bg-slate-800 px-6 py-3.5 border-t border-slate-700 flex flex-wrap justify-between items-center gap-2 shrink-0">
                 <button onclick="descargarImagenTalonario()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-xl font-semibold transition text-xs flex items-center gap-2">
                     <i class="fa-solid fa-download"></i> Descargar Imagen
                 </button>
-                <button onclick="enviarWhatsAppImagen()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-emerald-600/30 transition text-xs flex items-center gap-2">
+                <button onclick="enviarWhatsAppImagen(this)" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-emerald-600/30 transition text-xs flex items-center gap-2">
                     <i class="fa-brands fa-whatsapp text-sm"></i> Enviar Imagen por WhatsApp
                 </button>
             </div>
@@ -543,7 +552,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     configRifa.bgUrl = e.target.result;
-                    localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa));
+                    try { localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa)); } catch (err) { console.warn('Imagen muy pesada para guardar', err); }
                     document.getElementById('wpBgImg').src = configRifa.bgUrl;
                     document.getElementById('aiPreviewImg').src = configRifa.bgUrl;
                     alert("¡Talonario/Fondo personalizado subido y aplicado con éxito!");
@@ -884,93 +893,236 @@
             alert("¡Plantilla aplicada con éxito!");
         }
 
+        // Posición por defecto de la cuadrícula 00-99 dentro de la imagen (fracciones 0-1). Se ajusta desde el modal.
+        const GRID_DEF = { x: 0.022, y: 0.492, w: 0.959, h: 0.383 };
+        const EMOJIS_RAPIDOS = ['🐷','💗','❤️','❌','⭐','🔥','💰','✅','🍀','🎁','🐖','🔒'];
+        const FUENTE_EMOJI = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+
+        function gridActual() { return Object.assign({}, GRID_DEF, configRifa.grid || {}); }
+
+        let _tGuardarCfg;
+        function guardarConfigDebounce() {
+            clearTimeout(_tGuardarCfg);
+            _tGuardarCfg = setTimeout(() => {
+                try { localStorage.setItem('rifa_config_00_99', JSON.stringify(configRifa)); } catch (e) { console.warn('No se pudo guardar', e); }
+            }, 400);
+        }
+
         function abrirWhatsAppModal() {
-            document.getElementById('wpBgImg').src = configRifa.bgUrl;
-            document.getElementById('wpTitulo').innerText = `RIFA DE ${configRifa.premio.toUpperCase()}`;
-            document.getElementById('wpSub').innerText = `Juega: ${formatearFechaLarga(configRifa.fecha)} • ${configRifa.loteria}`;
-            actualizarVistaPreviaWp();
+            const img = document.getElementById('wpBgImg');
+            if (configRifa.bgUrl && img.getAttribute('src') !== configRifa.bgUrl) img.src = configRifa.bgUrl;
+
+            const inp = document.getElementById('inputEmojiCustom');
+            if (configRifa.emoji) inp.value = configRifa.emoji;
+            if (configRifa.emojiTam) document.getElementById('rngEmojiTam').value = configRifa.emojiTam;
+
+            // Botones de emoji rápidos
+            const cont = document.getElementById('emojiRapidos');
+            cont.innerHTML = '';
+            EMOJIS_RAPIDOS.forEach(e => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.textContent = e;
+                b.className = 'w-10 h-10 text-xl bg-slate-900 border border-slate-700 rounded-xl active:scale-95 hover:border-emerald-500 transition';
+                b.onclick = () => { inp.value = e; actualizarVistaPreviaWp(); };
+                cont.appendChild(b);
+            });
+
+            // Sliders de la cuadrícula
+            const g = gridActual();
+            document.getElementById('gridX').value = (g.x * 100).toFixed(1);
+            document.getElementById('gridY').value = (g.y * 100).toFixed(1);
+            document.getElementById('gridW').value = (g.w * 100).toFixed(1);
+            document.getElementById('gridH').value = (g.h * 100).toFixed(1);
+            const calibrada = !!configRifa.grid;
+            document.getElementById('detGrid').open = !calibrada;
+            document.getElementById('chkGuia').checked = !calibrada;
+
             document.getElementById('modalWhatsApp').classList.remove('hidden');
+            actualizarVistaPreviaWp();
         }
         function cerrarWhatsAppModal() { document.getElementById('modalWhatsApp').classList.add('hidden'); }
 
-        function actualizarVistaPreviaWp() {
-            const emoji = document.getElementById('inputEmojiCustom').value || '🐷';
-            document.getElementById('wpEmojiLabel').innerText = emoji;
-            const gridMini = document.getElementById('wpGridMini');
-            gridMini.innerHTML = '';
+        function cambiarGrid() {
+            configRifa.grid = {
+                x: parseFloat(document.getElementById('gridX').value) / 100,
+                y: parseFloat(document.getElementById('gridY').value) / 100,
+                w: parseFloat(document.getElementById('gridW').value) / 100,
+                h: parseFloat(document.getElementById('gridH').value) / 100
+            };
+            guardarConfigDebounce();
+            actualizarVistaPreviaWp();
+        }
 
-            for(let i=0; i<=99; i++) {
-                const s = i < 10 ? '0' + i : i.toString();
-                const span = document.createElement('span');
-                if(rifaData[s]) {
-                    span.innerText = emoji;
-                    span.className = "text-[11px] text-center font-bold flex items-center justify-center bg-red-100 rounded border border-red-200";
-                } else {
-                    span.innerText = s;
-                    span.className = "text-[8px] text-center font-semibold text-slate-700 flex items-center justify-center";
-                }
-                gridMini.appendChild(span);
+        function resetGrid() {
+            delete configRifa.grid;
+            guardarConfigDebounce();
+            const g = GRID_DEF;
+            document.getElementById('gridX').value = (g.x * 100).toFixed(1);
+            document.getElementById('gridY').value = (g.y * 100).toFixed(1);
+            document.getElementById('gridW').value = (g.w * 100).toFixed(1);
+            document.getElementById('gridH').value = (g.h * 100).toFixed(1);
+            document.getElementById('chkGuia').checked = true;
+            actualizarVistaPreviaWp();
+        }
+
+        function rectRedondeado(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        // Dibuja el talonario subido + emojis sobre los números ocupados. Devuelve false si la imagen aún no carga.
+        function dibujarTalonario(canvas, maxW, conGuia) {
+            const img = document.getElementById('wpBgImg');
+            if (!img.complete || !img.naturalWidth) return false;
+
+            const emoji = (document.getElementById('inputEmojiCustom').value || '').trim() || '🐷';
+            const tam = (parseFloat(document.getElementById('rngEmojiTam').value) || 80) / 100;
+            const conLeyenda = document.getElementById('chkLeyenda').checked;
+
+            const esc = Math.min(1, maxW / img.naturalWidth);
+            const W = Math.round(img.naturalWidth * esc);
+            const H = Math.round(img.naturalHeight * esc);
+            const legH = conLeyenda ? Math.round(W * 0.085) : 0;
+
+            canvas.width = W;
+            canvas.height = H + legH;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, W, H + legH);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, W, H);
+
+            const g = gridActual();
+            const gx = g.x * W, gy = g.y * H, gw = g.w * W, gh = g.h * H;
+            const cw = gw / 10, ch = gh / 10;
+
+            // Emojis sobre los números ocupados
+            const sz = Math.min(cw * 0.8, ch * 0.9) * tam * 1.05;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i <= 99; i++) {
+                const k = i < 10 ? '0' + i : String(i);
+                if (!rifaData[k]) continue;
+                const cx = gx + (i % 10) * cw + cw / 2;
+                const cy = gy + Math.floor(i / 10) * ch + ch / 2;
+                const rw = cw * 0.9, rh = ch * 0.94;
+
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.35)';
+                ctx.shadowBlur = Math.max(2, ch * 0.12);
+                ctx.shadowOffsetY = Math.max(1, ch * 0.04);
+                ctx.fillStyle = 'rgba(255,255,255,0.94)';
+                rectRedondeado(ctx, cx - rw / 2, cy - rh / 2, rw, rh, rh * 0.25);
+                ctx.fill();
+                ctx.restore();
+
+                ctx.font = `${Math.round(sz)}px ${FUENTE_EMOJI}`;
+                ctx.fillStyle = '#000';
+                ctx.fillText(emoji, cx, cy + sz * 0.05);
+            }
+
+            // Guía de calibración (solo vista previa)
+            if (conGuia) {
+                ctx.save();
+                ctx.strokeStyle = 'rgba(34,197,94,0.9)';
+                ctx.lineWidth = Math.max(1, W * 0.002);
+                ctx.strokeRect(gx, gy, gw, gh);
+                ctx.strokeStyle = 'rgba(34,197,94,0.5)';
+                ctx.lineWidth = Math.max(0.5, W * 0.001);
+                for (let c = 1; c < 10; c++) { ctx.beginPath(); ctx.moveTo(gx + c * cw, gy); ctx.lineTo(gx + c * cw, gy + gh); ctx.stroke(); }
+                for (let r = 1; r < 10; r++) { ctx.beginPath(); ctx.moveTo(gx, gy + r * ch); ctx.lineTo(gx + gw, gy + r * ch); ctx.stroke(); }
+                ctx.restore();
+            }
+
+            // Franja de leyenda debajo de la imagen
+            if (conLeyenda) {
+                const texto = `🟢 = Libre   |   ${emoji} = Ocupado   |   ¡Aparta tu número!`;
+                ctx.fillStyle = '#052e1b';
+                ctx.fillRect(0, H, W, legH);
+                ctx.fillStyle = '#6ee7b7';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                let fs = legH * 0.42;
+                ctx.font = `700 ${fs}px Montserrat, ${FUENTE_EMOJI}`;
+                const maxTxt = W * 0.94;
+                const tw = ctx.measureText(texto).width;
+                if (tw > maxTxt) { fs = fs * maxTxt / tw; ctx.font = `700 ${fs}px Montserrat, ${FUENTE_EMOJI}`; }
+                ctx.fillText(texto, W / 2, H + legH / 2 + fs * 0.04);
+            }
+            return true;
+        }
+
+        function actualizarVistaPreviaWp() {
+            const emoji = (document.getElementById('inputEmojiCustom').value || '').trim();
+            if (emoji) configRifa.emoji = emoji;
+            configRifa.emojiTam = document.getElementById('rngEmojiTam').value;
+            guardarConfigDebounce();
+            dibujarTalonario(document.getElementById('wpCanvas'), 900, document.getElementById('chkGuia').checked);
+        }
+
+        // Genera el archivo final (JPG de alta calidad, ancho máx. 1600 px: WhatsApp lo comprime mucho menos así)
+        async function generarImagenTalonario() {
+            if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+            const c = document.createElement('canvas');
+            if (!dibujarTalonario(c, 1600, false)) throw new Error('La imagen del talonario aún no carga');
+            return await new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('No se pudo generar la imagen')), 'image/jpeg', 0.93));
+        }
+
+        function descargarBlob(blob, nombre) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombre;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+
+        async function descargarImagenTalonario() {
+            try {
+                const blob = await generarImagenTalonario();
+                descargarBlob(blob, 'talonario-rifa.jpg');
+            } catch (err) {
+                console.error(err);
+                alert('No se pudo generar la imagen. Si el talonario es de internet (no subido por ti), sube tu imagen con "Subir Talonario" e intenta de nuevo.');
             }
         }
 
-        function descargarImagenTalonario() {
-            alert("¡Imagen del talonario visual lista para descargar y compartir en tus redes y estados!");
-        }
-
-        async function enviarWhatsAppImagen() {
-            const container = document.getElementById('whatsappCanvasContainer');
-            const emoji = document.getElementById('inputEmojiCustom').value || '🐷';
-            let ocupadosCount = Object.keys(rifaData).length;
-            let texto = `*${configRifa.premio.toUpperCase()}* 🎁\n` +
-                        `📅 Sorteo: ${formatearFechaLarga(configRifa.fecha)}\n` +
-                        `🎰 Lotería: ${configRifa.loteria}\n` +
-                        `💵 Valor del número: $${formatearMoneda(configRifa.valor)}\n` +
-                        `👤 Responsable: ${configRifa.responsable}\n` +
-                        `💳 Pago: ${configRifa.medioPago} (${configRifa.celPagos})\n\n` +
-                        `¡Apoya apartando tu número! (${ocupadosCount}/100 ocupados)\n` +
-                        `🟢 = Libre | ${emoji} = Ocupado`;
-
-            const btn = event.currentTarget;
+        async function enviarWhatsAppImagen(btn) {
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Preparando...';
 
             try {
-                const canvas = await html2canvas(container, { scale: 2, useCORS: true, allowTaint: false, logging: false });
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], 'talonario-rifa.png', { type: 'image/png' });
-                    
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share({
-                                files: [file],
-                                title: 'Talonario de Rifa',
-                                text: texto
-                            });
-                            btn.innerHTML = originalText;
-                            return;
-                        } catch (err) {
-                            console.log('Share canceled or failed', err);
-                        }
+                const blob = await generarImagenTalonario();
+                const file = new File([blob], 'talonario-rifa.jpg', { type: 'image/jpeg' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({ files: [file] });
+                        btn.innerHTML = originalText;
+                        return;
+                    } catch (err) {
+                        if (err && err.name === 'AbortError') { btn.innerHTML = originalText; return; }
+                        console.log('Share failed', err);
                     }
-                    
-                    // Fallback: descargar imagen y abrir WhatsApp con texto
-                    const link = document.createElement('a');
-                    link.download = 'talonario-rifa.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
+                }
 
-                    setTimeout(() => {
-                        const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-                        window.open(url, '_blank');
-                    }, 500);
-
-                    btn.innerHTML = originalText;
-                }, 'image/png');
+                // Respaldo: solo descargar la imagen (sin texto)
+                descargarBlob(blob, 'talonario-rifa.jpg');
+                alert('Imagen descargada. Ábrela desde tu galería y compártela por WhatsApp.');
+                btn.innerHTML = originalText;
             } catch (err) {
                 console.error(err);
                 btn.innerHTML = originalText;
-                const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-                window.open(url, '_blank');
+                alert('No se pudo generar la imagen. Sube tu talonario con "Subir Talonario" e intenta de nuevo.');
             }
         }
 
